@@ -1,5 +1,7 @@
 # findyourtune
 
+Senior Design
+
 Nathan
 Steve
 Matt
