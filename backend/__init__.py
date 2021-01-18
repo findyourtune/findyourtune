@@ -6,7 +6,6 @@ from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from backend.config import Config
 
-
 db = SQLAlchemy()
 # bcrypt = Bcrypt()
 # login_manager = LoginManager()
@@ -21,6 +20,12 @@ def create_app(config_class=Config):
     app.config.from_object(Config)
 
     db.init_app(app)
+
+    with app.app_context():
+        import backend.models  # Import the models
+        db.create_all()  # Create sql tables for our data models
+
+        return app
 
     from backend.home.routes import main
     app.register_blueprint(main)
