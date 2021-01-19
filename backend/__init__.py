@@ -44,6 +44,5 @@ def create_app(config_class=Config):
         from backend import models  # Import the models
         db.create_all()  # Create sql tables for our data models
 
-        return app
 
     return app
