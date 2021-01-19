@@ -44,5 +44,8 @@ def create_app(config_class=Config):
         from backend import models  # Import the models
         db.create_all()  # Create sql tables for our data models
 
+    caches_folder = './.spotify_caches/'
+    if not os.path.exists(caches_folder):
+        os.makedirs(caches_folder)
 
     return app
