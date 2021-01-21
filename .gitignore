@@ -144,3 +144,4 @@ cython_debug/
 media
 static
 node_modules
+.spotify_caches/

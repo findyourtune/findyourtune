@@ -1,12 +1,21 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify
+import os
+from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify, session, current_app
+from flask_session import Session
 from flask_wtf import Form
 from wtforms.fields.html5 import DateField
+import spotipy
+import uuid
+
+
+
 from backend import db
 # from backend.models import User
 # from flask_login import current_user
 # from datetime import datetime, date
 
 main = Blueprint('main', __name__)
+
+SCOPE = 'user-library-read user-read-playback-position'
 
 COURSES = [
     {
@@ -36,3 +45,32 @@ def testapi():
         'status': 'success',
         'courses': COURSES
     })
+
+def session_cache_path():
+    return './.spotify_caches/' + session.get('uuid')
+
+@main.route("/link_spotify", methods=['GET', 'POST'])
+def link_spotify():
+    if not session.get('uuid'):
+        session['uuid'] = str(uuid.uuid4())
+    
+    auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                cache_path=session_cache_path(),
+                                                show_dialog=True,
+                                                scope=SCOPE )
+    
+    if request.args.get('code'):
+        auth_manager.get_access_token(request.args.get("code"))
+        redirect('/link_spotify')
+    
+    if not auth_manager.get_cached_token():
+        auth_url = auth_manager.get_authorize_url()
+        return jsonify({
+            'auth_url': auth_url
+        })
+
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    return spotify.current_user()
+
