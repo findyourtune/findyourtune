@@ -1,23 +1,24 @@
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
-from backend import db
-from flask_login import UserMixin
+from backend import db, ma
 
 
-class Users(db.Model, UserMixin):
+class Users(db.Model):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
+    firstname = db.Column(db.String(20), nullable=False)
+    lastname = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(60), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     bio = db.Column(db.Text, nullable=True)
-    spotify_account = db.Column(db.String(120), nullable=False)
+    spotify_account = db.Column(db.String(120), nullable=True)
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        return s.dumps({'user_id': self.user_id}).decode('utf-8')
 
     @staticmethod
     def verify_reset_token(token):
@@ -30,6 +31,23 @@ class Users(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+
+# TODO: Implement Schema for each of our tables
+# Marshmallow is used for serialization/deserialization of Python data types for API calls
+class UsersSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Users
+
+    user_id = ma.auto_field()
+    username = ma.auto_field()
+    firstname = ma.auto_field()
+    lastname = ma.auto_field()
+    password = ma.auto_field()
+    email = ma.auto_field()
+    image_file = ma.auto_field()
+    bio = ma.auto_field()
+    spotify_account = ma.auto_field()
 
 
 class Posts(db.Model):

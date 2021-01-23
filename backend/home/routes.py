@@ -2,16 +2,11 @@ import os
 from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify, session, current_app
 from flask_session import Session
 from flask_wtf import Form
+from flask_jwt_extended import jwt_required
 from wtforms.fields.html5 import DateField
 import spotipy
 import uuid
 
-
-
-from backend import db
-# from backend.models import User
-# from flask_login import current_user
-# from datetime import datetime, date
 
 main = Blueprint('main', __name__)
 
@@ -39,7 +34,8 @@ COURSES = [
 def home():
     return 'Hello World'
 
-@main.route("/testapi", methods=['GET'])
+@main.route("/api/testapi", methods=['GET'])
+@jwt_required
 def testapi():
     return jsonify({
         'status': 'success',

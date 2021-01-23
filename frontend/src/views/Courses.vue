@@ -1,35 +1,3 @@
-<script>
- import axios from 'axios';
- import ThemePicker from '@/components/ThemePicker';
- 
- export default {
-  name: 'Courses',
-  components: {
-       'ThemePicker': ThemePicker
-   },
-  data() {
-    return {
-      courses: [],
-    };
-  },
-  methods: {
-    getCourses() {
-      const path = 'http://localhost/testapi';
-      axios.get(path)
-        .then((res) => {
-          this.courses = res.data.courses;
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    },
-  },
-  created() {
-    this.getCourses();
-  },
- };
- </script>
-
 <template>
     <div class="container">
         <h1>Test API</h1>
@@ -68,3 +36,46 @@
       </div>
     </div>
 </template>
+
+<script>
+ import axios from 'axios';
+ import authHeader from '../services/auth/auth-header';
+ import ThemePicker from '@/components/ThemePicker';
+ 
+ export default {
+  name: 'Courses',
+  components: {
+       'ThemePicker': ThemePicker
+   },
+  data() {
+    return {
+      courses: [],
+    };
+  },
+  computed: { // Returns stored user info and assigns to currentUser object
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
+  methods: {
+    getCourses() {
+      const path = 'http://localhost/api/testapi';
+      axios.get(path, { headers: authHeader() })
+        .then((res) => {
+          this.courses = res.data.courses;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  },
+  created() {
+    this.getCourses();
+  },
+  mounted() { // If user isn't logged in, send them to /login
+    if (!this.currentUser) {
+      this.$router.push('/login');
+    }
+  },
+ };
+ </script>
