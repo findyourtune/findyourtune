@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <b-card class="mt-3" header="Form Data Result">
+      <pre class="m-0">{{ userInfo }}</pre>
+    </b-card>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -31,11 +34,45 @@
 </template>
 
 <script>
+import axios from 'axios';
+import authHeader from '../services/auth/auth-header';
 export default {
   name: 'Main',
   props: {
     msg: String
-  }
+  },
+  data() {
+    return {
+      userInfo: {},
+    };
+  },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    }
+  },
+  methods: {
+    getUserInfo() {
+      const path = 'http://localhost/api/auth/get_user_info';
+      var userInfo = this.currentUser ? this.currentUser : ''
+      axios.get(path, {
+        params: {
+          access_token: userInfo.access_token ? userInfo.access_token : ''
+        },
+        headers: authHeader()
+      })
+      .then((res) => {
+        this.userInfo = res.data.userInfo ? res.data.userInfo : res.data.status
+      })
+      .catch((error) => {
+        console.error(error);
+        this.userInfo = 'User not logged in'
+      });
+    },
+  },
+  created() {
+    this.getUserInfo();
+  },
 }
 </script>
 
