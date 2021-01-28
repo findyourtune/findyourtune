@@ -4,7 +4,7 @@ from flask import jsonify
 
 errors = Blueprint('errors', __name__)
 
-# TODO: 404,, 403, 500 errorhandlers not being used right now,
+# TODO: 404, 403, 500 errorhandlers not being used right now,
 # All errors will use the InvalidAPIUsage custom exception for now...
 @errors.app_errorhandler(404)
 def page_not_found(e):

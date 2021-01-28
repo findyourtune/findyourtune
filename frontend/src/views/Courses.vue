@@ -25,9 +25,6 @@
             </tbody>
         </table>
       <div class="columns">
-        <div class="column">
-          <theme-picker class="column"/>
-        </div>
         <div class="column is-three-quarters">
           <themed-title>Examples of Themed Components</themed-title>
           <themed-btn>Themed Button</themed-btn>
@@ -40,13 +37,9 @@
 <script>
  import axios from 'axios';
  import authHeader from '../services/auth/auth-header';
- import ThemePicker from '@/components/ThemePicker';
  
  export default {
   name: 'Courses',
-  components: {
-       'ThemePicker': ThemePicker
-   },
   data() {
     return {
       courses: [],

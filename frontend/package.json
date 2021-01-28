@@ -15,6 +15,8 @@
     "core-js": "^3.6.5",
     "css-loader": "^5.0.1",
     "file-loader": "^6.2.0",
+    "sass": "^1.32.5",
+    "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "vee-validate": "^2.2.15",
@@ -22,6 +24,7 @@
     "vue-color": "^2.8.1",
     "vue-router": "^3.4.9",
     "vue-styled-components": "^1.6.0",
+    "vue-swatches": "^2.1.0",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

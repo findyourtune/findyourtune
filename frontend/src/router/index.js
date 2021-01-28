@@ -25,16 +25,11 @@ const router = new VueRouter({
       path: '/resetPasswordToken/:token',
       name: 'resetPasswordToken',
       component: () => import('../views/auth/ResetPasswordToken.vue')
-    },
-    {
-      path: '/editProfile',
-      name: 'editProfile',
-      component: () => import('../views/auth/EditProfile.vue')
-    },
+    }
   ]
 }) 
 
-// publicPages are paths in the router than should not require user authentication
+// publicPages are paths in the router that should not require user authentication
 router.beforeEach((to, from, next) => {
   const publicPages = ['/login', '/register', '/', '/resetPassword', '/resetPasswordToken/:token'];
   const authRequired = !publicPages.includes(to.path);

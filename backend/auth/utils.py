@@ -45,7 +45,6 @@ def send_reset_email(user):
     print(text)
     part1 = MIMEText(text, 'plain')
     msg.attach(part1)
-    # mail.send(msg)
 
     server_ssl = smtplib.SMTP_SSL("smtp.gmail.com", 465)
     server_ssl.ehlo() # optional, called by login()

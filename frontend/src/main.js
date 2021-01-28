@@ -14,7 +14,14 @@ import './static/app.css';
 
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {
+  // This is the default
+  inject: true,
+  // Important to name this something other than 'fields'
+  fieldsBagName: 'veeFields',
+  // This is not required but avoids possible naming conflicts
+  errorBagName: 'veeErrors'
+})
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
@@ -22,6 +29,9 @@ Vue.prototype.axios = axios
 
 new Vue({
   store,
+  beforeCreate() {
+    this.$store.commit('initializeStore');
+	},
   router,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app')
