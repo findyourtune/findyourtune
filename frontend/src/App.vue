@@ -1,16 +1,13 @@
 <template>
-    <div id="app" :style="cssProps">
-      <div class="container">
-        <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-        <div>
-          <router-link to="/" exact>Home</router-link>
-          <router-link to="/courses" exact>About</router-link>
-          <router-link to="/login" exact>Log In</router-link>
-          <router-link to="/register" exact>Register</router-link>
-          <router-link to="/profile" exact>Profile</router-link>
-        </div>
+  <div id="app" :style="cssProps">
+    <div >
+      <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
+      <Header></Header>
+      <side-bar-left></side-bar-left>
+      <div id="main-content">
         <router-view></router-view>
       </div>
+      <side-bar-right></side-bar-right>
     </div>
 </template>
 
@@ -25,16 +22,25 @@
 //   </div>
 
 <script>
+import Header from './components/Header.vue';
+import SideBarLeft from "./components/SideBarLeft.vue";
+import SideBarRight from "./components/SideBarRight.vue";
+
 export default {
-  name: 'App',
+  name: "App",
   computed: {
     cssProps() {
       return {
         '--app-color': (this.$store.state.appColor)
       }
     }
-  }
-}
+  },
+  components: {
+    Header,
+    SideBarLeft,
+    SideBarRight
+  },
+};
 </script>
 
 <style>
@@ -44,5 +50,15 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  /* text-align: center; */
+  color: #2c3e50;
+}
+
+#main-content{
+  position: fixed;
+  width: 80%;
+  margin-top: 100px;
+  margin-left: 200px;
+  padding: 16px 10px;
 }
 </style>
