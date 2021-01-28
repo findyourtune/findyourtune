@@ -1,15 +1,13 @@
 <template>
   <div id="app">
-    <div class="container">
+    <div >
       <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-      <div>
-        <router-link to="/" exact>Home</router-link>
-        <router-link to="/courses" exact>About</router-link>
-        <router-link to="/login" exact>Log In</router-link>
-        <router-link to="/register" exact>Register</router-link>
-        <router-link to="/profile" exact>Profile</router-link>
+      <Header></Header>
+      <side-bar-left></side-bar-left>
+      <div id="main-content">
+        <router-view></router-view>
       </div>
-      <router-view></router-view>
+      <side-bar-right></side-bar-right>
     </div>
   </div>
 </template>
@@ -25,14 +23,18 @@
 //   </div>
 
 <script>
-// import Courses from './components/Courses.vue'
+import Header from './components/Header.vue';
+import SideBarLeft from "./components/SideBarLeft.vue";
+import SideBarRight from "./components/SideBarRight.vue";
 
 export default {
-  name: 'App',
-  // components: {
-  //   Courses
-  // }
-}
+  name: "App",
+  components: {
+    Header,
+    SideBarLeft,
+    SideBarRight
+  },
+};
 </script>
 
 <style>
@@ -42,6 +44,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#main-content{
+  position: fixed;
+  width: 80%;
+  margin-top: 100px;
+  margin-left: 200px;
+  padding: 16px 10px;
 }
 </style>
