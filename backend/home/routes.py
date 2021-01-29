@@ -8,7 +8,7 @@ import spotipy
 import uuid
 from backend import db
 
-from backend.models import Users, UsersSchema, Posts, PostsSchema, Comments, CommentsSchema, Likes, LikesSchema, Direct_Messages, DirectMessagesSchema, Follow_Requests, FollowRequestsSchema, Follow_Relationship, FollowRelationshipSchema
+from backend.models import Users, Posts, Comments, Likes, Direct_Messages, Follow_Requests, Follow_Relationship
 
 main = Blueprint('main', __name__)
 
@@ -92,8 +92,6 @@ def post():
 @main.route("/api/post", methods=['GET'])
 @jwt_required
 def get_posts():
-    posts_schema = PostsSchema()
-
     posts = Posts.query.all()
 
     all_posts = [{
@@ -130,8 +128,6 @@ def get_comments():
 
     if Posts.query.filter_by(post_id=data['post_id']).first() is None:
         return jsonify({"msg": "Post does not exist."}), 500
-
-    comments_schema = CommentsSchema()
 
     comments = Comments.query.filter_by(post_id=data['post_id']).all()
 
@@ -175,8 +171,6 @@ def get_likes():
     elif Comments.query.filter_by(comment_id=data['comment_id']).first() is None and data['comment_id'] is not None:
         return jsonify({"msg": "Comment does not exist."}), 500
 
-    likes_schema = LikesSchema()
-
     likes = Likes.query.filter_by(post_id=data['post_id'], comment_id=data['comment_id']).all()
 
     all_likes = [{
@@ -210,8 +204,6 @@ def get_direct_message(user_name):
         return jsonify({"msg": "Sending user does not exist."}), 500
 
     dm_user_id = Users.query.filter_by(username=user_name).first()
-
-    direct_message_schema = DirectMessagesSchema()
 
     sent_direct_messages = Direct_Messages.query.filter_by(sender_id=dm_user_id.user_id)
     received_direct_messages = Direct_Messages.query.filter_by(receiver_id=dm_user_id.user_id)
@@ -258,8 +250,6 @@ def get_requests(user_name):
         return jsonify({"msg": "User does not exist."}), 500
 
     request_user_id = Users.query.filter_by(username=user_name).first()
-
-    request_schema = FollowRequestsSchema()
 
     follow_requests = Follow_Requests.query.filter_by(receiver_id=request_user_id.user_id).all()
 
