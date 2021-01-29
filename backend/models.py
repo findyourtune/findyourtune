@@ -62,6 +62,17 @@ class Posts(db.Model):
         return f"Post(post_id: '{self.post_id}', user_id: '{self.user_id}', timestamp: '{self.timestamp}')"
 
 
+class PostsSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Posts
+
+    post_id = ma.auto_field()
+    user_id = ma.auto_field()
+    text = ma.auto_field()
+    spotify_data = ma.auto_field()
+    timestamp = ma.auto_field()
+
+
 class Comments(db.Model):
     __tablename__ = 'comments'
     comment_id = db.Column(db.Integer, primary_key=True)
@@ -73,6 +84,15 @@ class Comments(db.Model):
         return f"Comment(comment_id: '{self.comment_id}', user_id: '{self.user_id}')"
 
 
+class CommentsSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Comments
+
+    comment_id = ma.auto_field
+    user_id = ma.auto_field
+    text = ma.auto_field
+
+
 class Likes(db.Model):
     __tablename__ = 'likes'
     like_id = db.Column(db.Integer, primary_key=True)
@@ -82,6 +102,16 @@ class Likes(db.Model):
 
     def __repr__(self):
         return f"Like(like_id: '{self.like_id}', user_id: '{self.user_id}')"
+
+
+class LikesSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Likes
+
+    like_id = ma.auto_field
+    user_id = ma.auto_field
+    post_id = ma.auto_field
+    comment_id = ma.auto_field
 
 
 class Direct_Messages(db.Model):
@@ -97,6 +127,18 @@ class Direct_Messages(db.Model):
         return f"DirectMessages(message_id: '{self.message_id}', timestamp: '{self.timestamp}')"
 
 
+class DirectMessagesSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Direct_Messages
+    
+    message_id = ma.auto_field
+    sender_id = ma.auto_field
+    receiver_id = ma.auto_field
+    text = ma.auto_field
+    spotify_data = ma.auto_field
+    timestamp = ma.auto_field
+
+
 class Follow_Requests(db.Model):
     __tablename__ = 'requests'
     request_id = db.Column(db.Integer, primary_key=True)
@@ -108,6 +150,16 @@ class Follow_Requests(db.Model):
         return f"Request(request_id: '{self.request_id}', timestamp: '{self.timestamp}')"
 
 
+class FollowRequestsSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Follow_Requests
+    
+    request_id = ma.auto_field
+    sender_id = ma.auto_field
+    receiver_id = ma.auto_field
+    timestamp = ma.auto_field
+
+
 class Follow_Relationship(db.Model):
     __tablename__ = 'relationships'
     relationship_id = db.Column(db.Integer, primary_key=True)
@@ -117,3 +169,13 @@ class Follow_Relationship(db.Model):
 
     def __repr__(self):
         return f"Relationship(relationship_id: '{self.request_id}', timestamp: '{self.timestamp}')"
+
+
+class FollowRelationshipSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Follow_Relationship
+    
+    relationship_id = ma.auto_field
+    follower_id = ma.auto_field
+    followed_id = ma.auto_field
+    timestamp = ma.auto_field
