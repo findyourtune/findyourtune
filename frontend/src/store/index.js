@@ -4,11 +4,12 @@ import { auth } from '../services/auth/auth-module'
 
 Vue.use(Vuex);
 
+const defaultAppColor = '#ffadad';
 const lightColor = '#f8f8f8';
 const darkColor = '#303030';
 // TODO: choose default value
 const state = {
-  appColor: '#ffadad',
+  appColor: defaultAppColor,
   themeColor: darkColor,
   theme: 'dark'
 };
@@ -49,7 +50,10 @@ const mutations = {
               state.themeColor = lightColor;
           }
       }
-  }
+  },
+  setDefaultAppColor() {
+    state.appColor = defaultAppColor;
+  },
 };
 
 const getters = {

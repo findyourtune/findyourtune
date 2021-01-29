@@ -1,6 +1,18 @@
 <template>
   <div id="header">
-    <h1>I am the header</h1>
+    <div id="headerContent">
+      <b-row>
+        <b-col cols="2">
+          Logo Here
+        </b-col>
+        <b-col cols="8" style="text-align: center;">
+          <h1>I am the header</h1>
+        </b-col>
+        <b-col cols="2">
+          <h1>Maybe user stuff should go here</h1>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
@@ -10,20 +22,18 @@ export default {
 }
 </script>
 
+<style scoped>
+#header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--app-color);
 }
 
-
-<style scoped>
-#header{
-  background: #1abc9c;
-  color: white;
-  position: fixed;
-  height: 100px;
-  margin: 0;
-  padding: 0;
+#headerContent {
+  /* display: flex;
+  flex-direction: column; */
+  margin-left: 10px;
   width: 100%;
-  position: fixed;
-  overflow: auto;
-  text-align: center;
 }
 </style>

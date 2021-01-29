@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h1>Test API</h1>
         <hr>
         <button type="button" class="btn btn-success btn-sm">Add Course</button>
@@ -24,13 +24,6 @@
             </tr>
             </tbody>
         </table>
-      <div class="columns">
-        <div class="column is-three-quarters">
-          <themed-title>Examples of Themed Components</themed-title>
-          <themed-btn>Themed Button</themed-btn>
-          <themed-btn>Another Themed Button</themed-btn>
-        </div>
-      </div>
     </div>
 </template>
 

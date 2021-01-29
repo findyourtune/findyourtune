@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <b-jumbotron>
       <b-row>
         <b-col>
@@ -191,10 +191,12 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'toggleTheme'
+      'toggleTheme',
+      'setDefaultAppColor'
     ]),
     logout() {
       this.$store.dispatch('auth/logout');
+      this.setDefaultAppColor();
       this.$router.push('/login');
     },
     editProfile() {

@@ -19,15 +19,15 @@ export default {
     return {
       color: '#1CA085',
       // Pastel
-      swatches: [
-        ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf'],
-        ['#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff']
-      ]
-      // Rainbow
       // swatches: [
-      //   ['#e6261f', '#eb7532', '#f7d038', '#a3e048'],
-      //   ['#49da9a', '#34bbe6', '#4355db', '#bf53ce']
+      //   ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf'],
+      //   ['#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff']
       // ]
+      // Rainbow
+      swatches: [
+        ['#e6261f', '#eb7532', '#f7d038', '#a3e048'],
+        ['#49da9a', '#34bbe6', '#4355db', '#bf53ce']
+      ]
     }
   },
   computed: {

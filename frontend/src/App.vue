@@ -1,25 +1,19 @@
 <template>
   <div id="app" :style="cssProps">
-    <div >
-      <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-      <Header></Header>
-      <side-bar-left></side-bar-left>
-      <div id="main-content">
-        <router-view></router-view>
+    <Header></Header>
+    <div class="page">
+      <SideBarLeft></SideBarLeft>
+      <div class="main">
+        <div class="sub-main">
+          <div class="main-content">
+            <router-view></router-view>
+          </div>  
+          <SideBarRight></SideBarRight>
+        </div>
       </div>
-      <side-bar-right></side-bar-right>
     </div>
+  </div>
 </template>
-
-// This is what I have in mind for root skeleton, the router-links above will moved to the SideBar component
-// <div id="app">
-//    <HeaderBar></HeaderBar>
-//    <SideBarLeft></SideBarLeft>
-//    <SideBarRight></SideBarRight>
-//    <main class="view">
-//      <router-view></router-view>
-//    </main>
-//   </div>
 
 <script>
 import Header from './components/Header.vue';
@@ -49,16 +43,49 @@ export default {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  /* text-align: center; */
-  color: #2c3e50;
 }
 
-#main-content{
-  position: fixed;
-  width: 80%;
-  margin-top: 100px;
-  margin-left: 200px;
-  padding: 16px 10px;
+.page {
+  display: flex;
+  height: calc( 100vh - 60px);
+  overflow-x: hidden;
+}
+
+.main {
+  background-color: var(--bg);
+  overflow-y: auto;
+  align-items: flex-start;
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-basis: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-basis: auto;
+  width: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
+.main-content {
+  width: 800px;
+  flex-basis: auto;
+  flex-shrink: 0; 
+  padding: 10px 15px;
+  flex-grow: 1;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* When screen gets smaller, hide "Suggested Content" */
+@media print, screen and (max-width: 1000px) {
+  .main-content {
+      width: auto;
+  }
 }
 </style>

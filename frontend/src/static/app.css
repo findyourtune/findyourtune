@@ -67,10 +67,14 @@
     --gradient: linear-gradient(to right, #8064A2 60%, #dbe1e8);
 }
 
-html, body{min-height:100%;}
-body{height:100vh;}
+html {
+    height: 100%;
+    overflow-y: hidden;
+}
 
 body {
+    height: 100%;
+    margin: 0;
     background-color: var(--bg);
     color: var(--font-color);
 }
@@ -81,6 +85,10 @@ h1 {
 
 a {
     color: var(--color);
+}
+
+a:hover {
+    color: var(--app-color);
 }
 
 strong {

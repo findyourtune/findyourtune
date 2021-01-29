@@ -1,6 +1,8 @@
 <template>
-  <div id="side-bar-right">
-    <h1>Suggested Content</h1>
+  <div class="sideBarRight">
+    <div class="sideBarRightContent">
+      <h1>Suggested Content</h1>
+    </div>
   </div>
 </template>
 
@@ -14,14 +16,29 @@ export default {
 
 
 <style scoped>
-#side-bar-right{
-  margin-top: 100px;
-  position: fixed;
-  right: 0;
-  width: 200px;
-  background-color: #f1f1f1;
-  position: fixed;
-  height: 100%;
-  overflow: auto;
+.sideBarRight {
+  /* width: 450px; */
+  display: flex;
+  flex-direction: column;
+  -webkit-box-align: start;
+  align-items: flex-start;
+  border-left: 1px solid var(--app-color);
+  flex-grow: 1;
+  flex-basis: 0;
+  flex-shrink: 0;
+}
+
+.sideBarRightContent {
+  padding-top: 10px;
+  display: flex;
+  width: 250px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+@media print, screen and (max-width: 1000px) {
+  .sideBarRight {
+      display: none;
+  }
 }
 </style>
