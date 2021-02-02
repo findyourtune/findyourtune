@@ -1,0 +1,174 @@
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --light0: #f8f8f8;
+    --light1: #dbe1e8;
+    --light2: #b2becd;
+    --sub-light:  #e9ecef;
+    --dark0: #303030;
+    --dark1: #424242;
+    --dark2: #212121;
+    --sub-dark: #343a40;
+    --purple0: #8064A2;
+    --purple1: #604B7A;
+    --bg: #303030;
+}
+
+  
+[data-theme="dark"] {
+    --link-color: #0a86da;
+    --link-white-color: #c1bfbd;
+    --bg: var(--dark0);
+    --bg2: var(--dark1);
+    --bg3: var(--sub-dark);
+    --header-bg: var(--purple0);
+    --font-color: var(--white);
+    --color: white;
+    --color2: #b2becd;
+    --btop: 1px solid #f8f8f8;
+    --gradient: linear-gradient(to right, #8064A2 60%, #212121);
+}
+  
+[data-theme="light"] {
+    --link-color: #0a86da;
+    --link-white-color: #c1bfbd;
+    --bg: var(--light0);
+    --bg2: var(--light1);
+    --bg3: var(--sub-light);
+    --header-bg: var(--purple0);
+    --font-color: #030303;
+    --color: #424242;
+    --color2: #424242;
+    --btop: 1px solid #424242;
+    --gradient: linear-gradient(to right, #8064A2 60%, #dbe1e8);
+}
+
+html {
+    height: 100%;
+    overflow-y: hidden;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--font-color);
+}
+
+h1 {
+    color: var(--color);
+}
+
+a {
+    color: var(--color);
+}
+
+a:hover {
+    color: var(--app-color);
+}
+
+strong {
+    color: var(--font-color);
+}
+
+.modal-content {
+    background-color: var(--bg);
+}
+
+.modal-open {
+    padding-right: 0 !important
+}
+
+.jumbotron {
+    background-color: var(--bg3);
+}
+
+.view-password-btn {
+    cursor: pointer;
+}
+
+.view-password-btn:hover {
+    opacity: 70%;
+}
+
+/* Slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--app-color);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Modal */
+.modal-backdrop {
+    z-index: 1;
+}
