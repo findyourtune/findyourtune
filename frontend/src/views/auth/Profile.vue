@@ -81,7 +81,7 @@
 
         <b-form-group
           id="input-group-3"
-          label="Username:"
+          label="Username"
           label-for="input-3"
         >
           <b-form-input
@@ -100,7 +100,7 @@
 
         <b-form-group
           id="input-group-4"
-          label="Email:"
+          label="Email"
           label-for="input-4"
         >
           <b-form-input

@@ -1,6 +1,7 @@
 // Services for auth module to access
 import axios from 'axios';
 import authHeader from './auth-header';
+import store from '../../store';
 
 const API_URL = 'http://127.0.0.1/api/auth/';
 
@@ -14,6 +15,10 @@ class AuthService {
       .then(response => {
         if (response.data.access_token) {
           localStorage.user = JSON.stringify(response.data);
+        }
+
+        if (response.data.appcolor) {
+          store.commit('setAppColor', response.data.appcolor) 
         }
 
         return response.data;
@@ -62,6 +67,16 @@ class AuthService {
         localStorage.user = JSON.stringify(response.data);
       }
 
+      return response.data;
+    });
+  }
+
+  updateAppColor(form) {
+    return axios.post(API_URL + 'update_appcolor', {
+      appcolor: form.appcolor,
+      username: form.username
+    }, { headers: authHeader() })
+    .then(response => {
       return response.data;
     });
   }

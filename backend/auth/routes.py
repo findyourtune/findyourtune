@@ -8,7 +8,7 @@ from backend import db, bcrypt
 from backend.models import Users, UsersSchema
 from backend.auth.forms import (RegistrationForm, LoginForm,
                                    RequestResetForm, ResetPasswordForm)
-from backend.auth.utils import save_picture, send_reset_email, validate_register
+from backend.auth.utils import save_picture, send_reset_email, validate_register, validate_login, validate_profile_edit
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
 import datetime
@@ -32,6 +32,7 @@ def register():
 @auth.route("/api/auth/login", methods=['GET', 'POST'])
 def login():
     data = request.json
+    validate_login(data)
     user = Users.query.filter_by(email=data['email']).first()
     try:
         authorized = bcrypt.check_password_hash(user.password, data['password'])
@@ -49,7 +50,8 @@ def login():
         'username': user.username,
         'user_id': user.user_id,
         'firstname': user.firstname,
-        'lastname': user.lastname
+        'lastname': user.lastname,
+        'appcolor': user.appcolor
     }
     return jsonify(ret), 200
 
@@ -143,6 +145,7 @@ def reset_token():
 @jwt_required
 def update_profile():
     data = request.json
+    validate_profile_edit(data)
     token = request.headers['Authorization']
     token2 = token.split(' ')
     header_token = token2[1]
@@ -164,5 +167,31 @@ def update_profile():
         'user_id': user.user_id,
         'firstname': user.firstname,
         'lastname': user.lastname
+    }
+    return jsonify(ret), 200
+
+@auth.route("/api/auth/update_appcolor", methods=['GET', 'POST'])
+@jwt_required
+def update_appcolor():
+    data = request.json
+    token = request.headers['Authorization']
+    token2 = token.split(' ')
+    header_token = token2[1]
+    decoded = jwt.decode(header_token, verify=False)
+    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    user.appcolor = data['appcolor']
+    db.session.commit()
+    
+    expires = datetime.timedelta(days=7)
+    users_schema = UsersSchema()
+    ret = {
+        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
+        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
+        'email': user.email,
+        'username': user.username,
+        'user_id': user.user_id,
+        'firstname': user.firstname,
+        'lastname': user.lastname,
+        'appcolor': user.appcolor
     }
     return jsonify(ret), 200

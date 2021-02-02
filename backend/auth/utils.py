@@ -53,13 +53,21 @@ def send_reset_email(user):
     server_ssl.close()
 
 
-# First server side validation function. May want a dedicated file for server side form validation...
 def validate_register(data):
     if data['firstname'] == '':
         raise InvalidAPIUsage('Please provide a first name', status_code=410)
     
     if data['lastname'] == '':
         raise InvalidAPIUsage('Please provide a last name', status_code=410)
+
+    if data['username'] == '':
+        raise InvalidAPIUsage('Please provide a username', status_code=410)
+
+    if data['email'] == '':
+        raise InvalidAPIUsage('Please provide a valid email', status_code=410)
+
+    if data['password'] == '':
+        raise InvalidAPIUsage('Please enter a password', status_code=410)
 
     user = Users.query.filter_by(username=data['username']).first()
     if user:
@@ -71,4 +79,25 @@ def validate_register(data):
     
     if data['password'] != data['confirmPassword']:
         raise InvalidAPIUsage('Passwords must match.', status_code=410)
+
+
+def validate_login(data):
+    if data['email'] == '':
+        raise InvalidAPIUsage('Please provide a valid email', status_code=410)
+
+    if data['password'] == '':
+        raise InvalidAPIUsage('Please enter a password', status_code=410)
+
+
+def validate_profile_edit(data):
+    if data['firstname'] == '':
+        raise InvalidAPIUsage('Please provide a first name', status_code=410)
     
+    if data['lastname'] == '':
+        raise InvalidAPIUsage('Please provide a last name', status_code=410)
+
+    if data['username'] == '':
+        raise InvalidAPIUsage('Please provide a username', status_code=410)
+
+    if data['email'] == '':
+        raise InvalidAPIUsage('Please provide a valid email', status_code=410)
