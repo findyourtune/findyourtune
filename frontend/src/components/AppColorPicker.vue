@@ -42,7 +42,23 @@ export default {
     ]),
   },
   watch: {
-    themeColor() {}
+    themeColor() {},
+    appColor() {
+      var form = {
+        username: this.$store.state.auth.user.username,
+        appcolor: this.$store.state.appColor
+      }
+      this.$store.dispatch('auth/updateAppColor', form).then(
+          () => {
+          },
+          error => {
+          this.message =
+              (error.response && error.response.data) ||
+              error.message ||
+              error.toString();
+          }
+        );
+    }
   }
 };
 </script>

@@ -1,33 +1,44 @@
 <template>
   <div>
-    <b-form @submit="onSubmit" v-if="show">
+    <b-form @submit.stop.prevent="onSubmit" v-if="show">
       <b-form-group
         id="input-group-1"
-        label="Email:"
+        label="Email"
         label-for="input-1"
       >
         <b-form-input
         id="input-1"
+        name="input-1"
         v-model="form.email"
         type="email"
         placeholder="Enter email"
-        v-validate="'required'"
+        v-validate="{ required: true, min: 5 }"
+        :state="validateState('input-1')"
+        aria-describedby="input-1-live-feedback"
+        data-vv-as="Email"
         ></b-form-input>
+        <b-form-invalid-feedback id="input-1-live-feedback">{{ veeErrors.first('input-1') }}</b-form-invalid-feedback>
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="Password:" label-for="input-2">
+      <b-form-group id="input-group-2" label="Password" label-for="input-2">
         <b-input-group>
           <b-form-input
+          ref="password"
           id="input-2"
+          name="input-2"
           v-model="form.password"
           placeholder="Enter Password"
-          v-validate="'required'"
+          v-validate="{ required: true, min: 8 }"
+          :state="validateState('input-2')"
+          aria-describedby="input-2-live-feedback"
+          data-vv-as="Password"
           :type="passwordFieldType"
           ></b-form-input>
           <b-input-group-append is-text>
             <b-icon v-if="passwordFieldType === 'password'" class="view-password-btn" @click="switchVisibility()" icon="eye-slash"></b-icon>
             <b-icon v-if="passwordFieldType === 'text'" class="view-password-btn" @click="switchVisibility()" icon="eye"></b-icon>
           </b-input-group-append>
+          <b-form-invalid-feedback id="input-2-live-feedback">{{ veeErrors.first('input-2') }}</b-form-invalid-feedback>
         </b-input-group>
       </b-form-group>
 
@@ -100,7 +111,16 @@ export default {
         );
         }
       });
-    }
+    },
+    validateState(ref) {
+      if (
+        this.veeFields[ref] &&
+        (this.veeFields[ref].dirty || this.veeFields[ref].validated)
+      ) {
+        return !this.veeErrors.has(ref);
+      }
+      return null;
+    },
   }
 };
 </script>

@@ -74,6 +74,18 @@ export const auth = {
         }
       );
     },
+    updateAppColor({ commit }, user) {
+      return AuthService.updateAppColor(user).then(
+        user => {
+          commit('updateAppColorSuccess', user);
+          return Promise.resolve(user);
+        },
+        error => {
+          commit('updateAppColorFailure');
+          return Promise.reject(error);
+        }
+      );
+    },
   },
   mutations: {
     loginSuccess(state, user) {
@@ -111,6 +123,14 @@ export const auth = {
       state.user = user;
     },
     updateProfileFailure(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
+    },
+    updateAppColorSuccess(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
+    },
+    updateAppColorFailure(state, user) {
       state.status.loggedIn = true;
       state.user = user;
     }

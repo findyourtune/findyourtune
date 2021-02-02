@@ -15,6 +15,7 @@ class Users(db.Model):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     bio = db.Column(db.Text, nullable=True)
     spotify_account = db.Column(db.String(120), nullable=True)
+    appcolor = db.Column(db.String(10), nullable=True)
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
@@ -48,6 +49,7 @@ class UsersSchema(ma.SQLAlchemySchema):
     image_file = ma.auto_field()
     bio = ma.auto_field()
     spotify_account = ma.auto_field()
+    appcolor = ma.auto_field()
 
 
 class Posts(db.Model):
