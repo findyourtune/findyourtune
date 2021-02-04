@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify, abort, Response
+from flask import render_template, url_for, flash, redirect, request, Blueprint, jsonify, abort, Response, current_app
 from flask_jwt_extended import (
     JWTManager, jwt_required, get_jwt_identity,
     create_access_token, create_refresh_token,
@@ -11,8 +11,10 @@ from backend.auth.forms import (RegistrationForm, LoginForm,
 from backend.auth.utils import save_picture, send_reset_email, validate_register, validate_login, validate_profile_edit
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
+import os
 import datetime
 import jwt
+import spotipy
 
 
 auth = Blueprint('auth', __name__)
@@ -195,3 +197,68 @@ def update_appcolor():
         'appcolor': user.appcolor
     }
     return jsonify(ret), 200
+
+def session_cache_path(cache_file):
+    return './.spotify_caches/' + cache_file
+
+@auth.route("/api/auth/link_spotify", methods=['GET', 'POST'])
+@jwt_required
+def link_spotify():
+    data = request.json
+    token = request.headers['Authorization']
+    token2 = token.split(' ')
+    header_token = token2[1]
+    decoded = jwt.decode(header_token, verify=False)
+    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    user.spotify_account = data['spotify_account']
+    db.session.commit()
+    
+    expires = datetime.timedelta(days=7)
+    users_schema = UsersSchema()
+    cache_file = str(data['spotify_account'])
+    auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                show_dialog=True,
+                                                cache_path=session_cache_path(cache_file),
+                                                scope=current_app.config['SCOPE'] )
+    auth_url = None
+    if not auth_manager.get_cached_token():
+        auth_url = auth_manager.get_authorize_url()
+
+    ret = {
+        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
+        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
+        'email': user.email,
+        'username': user.username,
+        'user_id': user.user_id,
+        'firstname': user.firstname,
+        'lastname': user.lastname,
+        'appcolor': user.appcolor,
+        'auth_url': auth_url
+    }
+    return jsonify(ret), 200
+
+@auth.route("/api/auth/link_spotify_callback", methods=['GET', 'POST'])
+def link_spotify_callback():
+    cache_file = 'temp'
+    auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                show_dialog=True,
+                                                cache_path=session_cache_path(cache_file),
+                                                scope=current_app.config['SCOPE'] )
+
+    if request.args.get('code'):
+        auth_manager.get_access_token(request.args.get("code"))
+        redirect('/api/auth/link_spotify_callback')
+    
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    sp_user = spotify.current_user()
+    from_file = open(session_cache_path(cache_file), 'r')
+    to_file = open(session_cache_path(str(sp_user['id'])), 'w')
+    to_file.write(from_file.read())
+    to_file.close()
+    from_file.close()
+    os.remove(session_cache_path(cache_file))
+    return redirect(current_app.config['FRONTEND_URL'] + '/#/profile')

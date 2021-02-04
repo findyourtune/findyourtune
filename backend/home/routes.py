@@ -44,35 +44,6 @@ def testapi():
         'courses': COURSES
     })
 
-def session_cache_path():
-    return './.spotify_caches/' + session.get('uuid')
-
-@main.route("/link_spotify", methods=['GET', 'POST'])
-def link_spotify():
-    if not session.get('uuid'):
-        session['uuid'] = str(uuid.uuid4())
-    
-    auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
-                                                client_secret=current_app.config['SPOTIFY_SECRET_ID'],
-                                                redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
-                                                cache_path=session_cache_path(),
-                                                show_dialog=True,
-                                                scope=SCOPE )
-    
-    if request.args.get('code'):
-        auth_manager.get_access_token(request.args.get("code"))
-        redirect('/link_spotify')
-    
-    if not auth_manager.get_cached_token():
-        auth_url = auth_manager.get_authorize_url()
-        return jsonify({
-            'auth_url': auth_url
-        })
-
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return spotify.current_user()
-
-
 @main.route("/api/post", methods=['POST'])
 @jwt_required
 def post():

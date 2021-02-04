@@ -8,7 +8,7 @@ const API_URL = 'http://127.0.0.1/api/auth/';
 class AuthService {
   login(form) {
     return axios
-      .post(API_URL + 'login', {
+      .post(AUTH_URL + 'login', {
         email: form.email,
         password: form.password
       })
@@ -31,7 +31,7 @@ class AuthService {
   }
 
   register(form) {
-    return axios.post(API_URL + 'register', {
+    return axios.post(AUTH_URL + 'register', {
       firstname: form.firstname,
       lastname: form.lastname,
       username: form.username,
@@ -42,13 +42,13 @@ class AuthService {
   }
 
   passwordReset(form) {
-    return axios.post(API_URL + 'reset_password', {
+    return axios.post(AUTH_URL + 'reset_password', {
       email: form.email,
     });
   }
 
   passwordResetToken(form) {
-    return axios.post(API_URL + 'reset_password_token', {
+    return axios.post(AUTH_URL + 'reset_password_token', {
       token: form.token,
       password: form.password,
       confirmPassword: form.confirmPassword
@@ -56,7 +56,7 @@ class AuthService {
   }
 
   updateProfile(form) {
-    return axios.post(API_URL + 'update_profile', {
+    return axios.post(AUTH_URL + 'update_profile', {
       firstname: form.firstname,
       lastname: form.lastname,
       username: form.username,
@@ -72,11 +72,24 @@ class AuthService {
   }
 
   updateAppColor(form) {
-    return axios.post(API_URL + 'update_appcolor', {
+    return axios.post(AUTH_URL + 'update_appcolor', {
       appcolor: form.appcolor,
       username: form.username
     }, { headers: authHeader() })
     .then(response => {
+      return response.data;
+    });
+  }
+
+  updateSpotifyAccount(form) {
+    return axios.post(AUTH_URL + 'link_spotify', {
+      spotify_account: form.spotify_account,
+      username: form.username
+    }, { headers: authHeader() } )
+    .then(response => {
+      if(response.data.auth_url) {
+        window.location.href = response.data.auth_url;
+      }
       return response.data;
     });
   }
