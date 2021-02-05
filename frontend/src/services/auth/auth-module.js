@@ -86,6 +86,18 @@ export const auth = {
         }
       );
     },
+    updateSpotifyAccount({ commit }, user) {
+      return AuthService.updateSpotifyAccount(user).then(
+        user => {
+          commit('updateSpotifyAccountSuccess', user);
+          return Promise.resolve(user);
+        },
+        error => {
+          commit('updateSpotifyAccountFailure');
+          return Promise.reject(error);
+        }
+      );
+    },
   },
   mutations: {
     loginSuccess(state, user) {
@@ -131,6 +143,14 @@ export const auth = {
       state.user = user;
     },
     updateAppColorFailure(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
+    },
+    updateSpotifyAccountSuccess(state, user) {
+      state.status.loggedIn = true;
+      state.user = user;
+    },
+    updateSpotifyAccountFailure(state, user) {
       state.status.loggedIn = true;
       state.user = user;
     }

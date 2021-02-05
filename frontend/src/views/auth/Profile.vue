@@ -37,7 +37,9 @@
     <b-button v-b-modal.edit-profile variant="outline-info" class="mb-2">
       <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Edit Profile
     </b-button>
-
+    <b-button v-b-modal.edit-spotify-account variant="outline-info" class="mb-2">
+      <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Link Spotify
+    </b-button>
     <!-- Modal -->
     <b-modal id="edit-profile" title="Edit Profile" ok-title="Save" @ok="handleOk">
       <b-form @submit.stop.prevent="onSubmit" ref="form" v-if="show">
@@ -119,6 +121,29 @@
 
         </b-form>
     </b-modal>
+
+    <b-modal id="edit-spotify-account" title="Edit Spotify Account" ok-title="Save" @ok="handleOkSpotify">
+      <b-form @submit.stop.prevent="onSubmitSpotify" ref="form" v-if="show">
+        <b-form-group
+          id="input-group-1"
+          label="Spotify Account"
+          label-for="input-1"
+        >
+        <b-form-input
+            id="input-1"
+            name="input-1"
+            v-model="form.spotify_account"
+            type="text"
+            placeholder="Enter spotify account"
+            v-validate="{ required: true, min: 2 }"
+            :state="validateState('input-1')"
+            aria-describedby="input-1-live-feedback"
+            data-vv-as="Spotify Account"
+          ></b-form-input>
+        </b-form-group>
+      </b-form>
+    </b-modal>
+
     <label class="switch">
       <input id="themeToggle" type="checkbox" @click="toggleTheme()">
       <span class="slider round"></span>
@@ -178,7 +203,8 @@ export default {
           firstname: '',
           lastname: '',
           email: '',
-          username: ''
+          username: '', 
+          spotify_account: ''
       },
       show: true,
     };
@@ -188,6 +214,7 @@ export default {
     this.form.lastname = this.$store.state.auth.user.lastname;
     this.form.email = this.$store.state.auth.user.email;
     this.form.username = this.$store.state.auth.user.username;
+    this.form.spotify_account = this.$store.state.auth.user.spotify_account;
   },
   methods: {
     ...mapMutations([
@@ -230,6 +257,26 @@ export default {
         }
       });
     },
+    onSubmitSpotify(){
+      this.loading = false;
+      if (this.form.spotify_account) {
+       this.$store.dispatch('auth/updateSpotifyAccount', this.form).then(
+        () => {
+        // Hide the modal manually
+        this.$nextTick(() => {
+          this.$bvModal.hide('edit-spotify-account')
+        })
+        },
+        error => {
+        this.loading = false;
+        this.successful = false;
+        this.message =
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString();
+        });
+      }
+    },
     validateState(ref) {
       if (
         this.veeFields[ref] &&
@@ -244,6 +291,12 @@ export default {
         bvModalEvt.preventDefault()
         // Trigger submit handler
         this.onSubmit()
+    },
+    handleOkSpotify(bvModalEvt) {
+      // Prevent modal from closing
+        bvModalEvt.preventDefault()
+        // Trigger submit handler
+        this.onSubmitSpotify()
     }
   }
 };
