@@ -31,15 +31,26 @@
       <strong>Email:</strong>
       {{currentUser.email}}
     </p>
-    <b-button @click="logout()" variant="outline-info" class="mb-2">
+    <b-button @click="logout()" pill class="m-2 custom-btn">
       <b-icon icon="power" aria-hidden="true"></b-icon> Logout
     </b-button>
-    <b-button v-b-modal.edit-profile variant="outline-info" class="mb-2">
+    <b-button v-b-modal.edit-profile pill class="m-2 custom-btn">
       <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Edit Profile
     </b-button>
-    <b-button v-b-modal.edit-spotify-account variant="outline-info" class="mb-2">
+    <!-- <b-button v-if="!currentUser.spotify_account" v-b-modal.edit-spotify-account variant="outline-info" class="mb-2"> -->
+    <b-button v-b-modal.edit-spotify-account pill class="m-2 custom-btn">
       <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Link Spotify
     </b-button>
+
+    <label class="switch">
+      <input id="themeToggle" type="checkbox" @click="toggleTheme()">
+      <span class="slider round"></span>
+    </label>
+
+    <br />
+    <app-color-picker class="column"/>
+    <br />
+    <themed-divider></themed-divider>
     <!-- Modal -->
     <b-modal id="edit-profile" title="Edit Profile" ok-title="Save" @ok="handleOk">
       <b-form @submit.stop.prevent="onSubmit" ref="form" v-if="show">
@@ -143,17 +154,6 @@
         </b-form-group>
       </b-form>
     </b-modal>
-
-    <label class="switch">
-      <input id="themeToggle" type="checkbox" @click="toggleTheme()">
-      <span class="slider round"></span>
-    </label>
-
-    <br />
-    <app-color-picker class="column"/>
-    <br />
-     <themed-title>Examples of Themed Components</themed-title>
-     <themed-btn>Themed Button</themed-btn>
   </div>
 </template>
 
@@ -206,7 +206,7 @@ export default {
           username: '', 
           spotify_account: ''
       },
-      show: true,
+      show: true
     };
   },
   created() {

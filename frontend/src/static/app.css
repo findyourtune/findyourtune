@@ -99,6 +99,48 @@ strong {
     background-color: var(--bg);
 }
 
+.close {
+    color: var(--font-color);
+}
+
+.form-control {
+    background-color: var(--bg2);
+    color: var(--font-color);
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: var(--bg2);
+    border-color: var(--app-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.1rem var(--app-color);
+    color: var(--font-color);
+}
+
+.custom-btn {
+    color: var(--app-color);
+    background-color: transparent;
+    border-color: var(--app-color);
+}
+
+.custom-btn:hover {
+    color: var(--light);
+    background-color: var(--app-color);
+    border-color: var(--app-color);
+}
+
+.custom-btn:not(:disabled):not(.disabled):active {
+    color: var(--light);
+    background-color: var(--app-color);
+    border-color: var(--app-color);
+}
+
+.custom-btn:not(:disabled):not(.disabled):focus {
+    color: var(--app-color);
+    background-color: transparent;
+    border-color: var(--app-color);
+}
+
 .modal-open {
     padding-right: 0 !important
 }

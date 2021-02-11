@@ -53,7 +53,8 @@ def login():
         'user_id': user.user_id,
         'firstname': user.firstname,
         'lastname': user.lastname,
-        'appcolor': user.appcolor
+        'appcolor': user.appcolor,
+        'spotify_account': user.spotify_account
     }
     return jsonify(ret), 200
 
@@ -235,7 +236,8 @@ def link_spotify():
         'firstname': user.firstname,
         'lastname': user.lastname,
         'appcolor': user.appcolor,
-        'auth_url': auth_url
+        'auth_url': auth_url,
+        'spotify_account': user.spotify_account
     }
     return jsonify(ret), 200
 

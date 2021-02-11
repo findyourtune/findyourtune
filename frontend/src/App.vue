@@ -73,7 +73,7 @@ export default {
 }
 
 .main-content {
-  width: 800px;
+  width: 600px;
   flex-basis: auto;
   flex-shrink: 0; 
   padding: 10px 15px;

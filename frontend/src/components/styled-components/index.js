@@ -15,3 +15,11 @@ export const themedTitle = Vue.component('themed-title', {
     components: { ThemedTitle },
     template: `<ThemedTitle :color="$store.getters['appColor']"><slot></slot></ThemedTitle>`,
 });
+
+// Themed Divider
+import ThemedDivider from './ThemedDivider';
+
+export const themedDivider = Vue.component('themed-divider', {
+    components: { ThemedDivider },
+    template: `<ThemedDivider :color="$store.getters['appColor']"><slot></slot></ThemedDivider>`,
+});
