@@ -63,11 +63,12 @@ def post():
 @main.route("/api/post", methods=['GET'])
 @jwt_required
 def get_posts():
-    posts = Posts.query.all()
+    posts = Posts.query.order_by(Posts.timestamp.desc()).all()
 
     all_posts = [{
         'post_id': post.post_id, 
         'user_id': post.user_id, 
+        'name': Users.query.filter_by(user_id = post.user_id).first().firstname + " " + Users.query.filter_by(user_id = post.user_id).first().lastname,
         'text': post.text, 
         'spotify_data': post.spotify_data, 
         'timestamp': post.timestamp
