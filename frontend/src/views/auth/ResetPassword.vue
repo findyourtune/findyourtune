@@ -47,7 +47,7 @@ export default {
   },
   mounted() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/u/' + this.$store.state.auth.user.username);
     }
   },
   methods: {

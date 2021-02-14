@@ -15,7 +15,7 @@
           <router-link to="/register" exact>Register</router-link>
         </div>
         <div v-if="loggedIn">
-          <router-link to="/profile" exact>Profile</router-link>
+          <router-link :to=profileLink exact>Profile</router-link>
         </div>
       </div>
     </div>
@@ -31,6 +31,9 @@ export default {
       },
       loggedIn() {
         return this.$store.state.auth.status.loggedIn;
+      },
+      profileLink() {
+        return '/u/' + this.$store.state.auth.user.username;
       }
     },
 }
@@ -38,7 +41,7 @@ export default {
 
 <style scoped>
 .sideBarLeft {
-  max-width: 600px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

@@ -40,12 +40,14 @@ def create_app(config_class=Config):
         jti = decrypted_token['jti']
         return jti in blacklist
 
-    from backend.home.routes import main
+    from backend.social.routes import social
     from backend.auth.routes import auth
+    from backend.music.routes import music
     from backend.errors.handlers import errors    
     
-    app.register_blueprint(main)   
+    app.register_blueprint(social)   
     app.register_blueprint(auth)
+    app.register_blueprint(music)
     app.register_blueprint(errors) 
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})

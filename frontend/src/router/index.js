@@ -17,7 +17,7 @@ const router = new VueRouter({
     { path: '/courses', component: Courses, name: 'courses' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
-    { path: '/profile', component: Profile, name: 'profile' },
+    { path: '/u/:username', component: Profile, name: 'profile' },
     { path: '/resetPassword', component: ResetPassword, name: 'resetPassword' },
     { path: '/resetPasswordToken/:token', component: ResetPasswordToken, name: 'resetPasswordToken' },
   ]

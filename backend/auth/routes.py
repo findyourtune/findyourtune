@@ -6,9 +6,7 @@ from flask_jwt_extended import (
 )
 from backend import db, bcrypt
 from backend.models import Users, UsersSchema
-from backend.auth.forms import (RegistrationForm, LoginForm,
-                                   RequestResetForm, ResetPasswordForm)
-from backend.auth.utils import save_picture, send_reset_email, validate_register, validate_login, validate_profile_edit
+from backend.auth.utils import session_cache_path, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
 import os
@@ -45,17 +43,13 @@ def login():
     
     expires = datetime.timedelta(days=7)
     users_schema = UsersSchema()
-    ret = {
-        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
-        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
-        'email': user.email,
-        'username': user.username,
-        'user_id': user.user_id,
-        'firstname': user.firstname,
-        'lastname': user.lastname,
-        'appcolor': user.appcolor,
-        'spotify_account': user.spotify_account
-    }
+
+    spotify_linked = is_users_spotify_linked(user.username)
+    ret = users_schema.dump(user)
+    ret['access_token'] = create_access_token(identity=users_schema.dump(user), expires_delta=expires)
+    ret['refresh_token'] = create_refresh_token(identity=users_schema.dump(user), expires_delta=expires)
+    ret['spotify_linked'] = spotify_linked
+
     return jsonify(ret), 200
 
 
@@ -97,26 +91,30 @@ def protected():
     return jsonify({'hello': 'world'})
 
 
-@auth.route("/api/auth/get_user_info", methods=['GET'])
+@auth.route("/api/auth/get_user_info/<username>", methods=['GET'])
 @jwt_required
-def getUserInfo():
+def getUserInfo(username):
     data = request
     users_schema = UsersSchema()
     # Code takes jwt token from request params
-    token = request.args.get("access_token")
+    # token = request.args.get("access_token")
 
     # Code takes jwt token from request header
     # token = request.headers['Authorization']
     # token2 = token.split(' ')
     # headerToken = token2[1]
 
-    decoded = jwt.decode(token, verify=False)
+    # decoded = jwt.decode(headerToken, verify=False)
     # print(decoded['identity'])
-    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    # user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    user = Users.query.filter_by(username=username).first()
+    spotify_linked = is_users_spotify_linked(user.username)
+    userInfo = users_schema.dump(user)
+    userInfo['spotify_linked'] = spotify_linked
 
     return jsonify({
         'status': 'success',
-        'userInfo': users_schema.dump(user)
+        'userInfo': userInfo
     }), 200
 
 
@@ -158,19 +156,18 @@ def update_profile():
     user.lastname = data['lastname']
     user.username = data['username']
     user.email = data['email']
+    user.bio = data['bio']
     db.session.commit()
     
     expires = datetime.timedelta(days=7)
     users_schema = UsersSchema()
-    ret = {
-        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
-        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
-        'email': user.email,
-        'username': user.username,
-        'user_id': user.user_id,
-        'firstname': user.firstname,
-        'lastname': user.lastname
-    }
+
+    spotify_linked = is_users_spotify_linked(user.username)
+    ret = users_schema.dump(user)
+    ret['access_token'] = create_access_token(identity=users_schema.dump(user), expires_delta=expires)
+    ret['refresh_token'] = create_refresh_token(identity=users_schema.dump(user), expires_delta=expires)
+    ret['spotify_linked'] = spotify_linked
+    
     return jsonify(ret), 200
 
 @auth.route("/api/auth/update_appcolor", methods=['GET', 'POST'])
@@ -185,22 +182,11 @@ def update_appcolor():
     user.appcolor = data['appcolor']
     db.session.commit()
     
-    expires = datetime.timedelta(days=7)
     users_schema = UsersSchema()
-    ret = {
-        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
-        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
-        'email': user.email,
-        'username': user.username,
-        'user_id': user.user_id,
-        'firstname': user.firstname,
-        'lastname': user.lastname,
-        'appcolor': user.appcolor
-    }
+    spotify_linked = is_users_spotify_linked(user.username)
+    ret = users_schema.dump(user)
+    ret['spotify_linked'] = spotify_linked
     return jsonify(ret), 200
-
-def session_cache_path(cache_file):
-    return './.spotify_caches/' + cache_file
 
 @auth.route("/api/auth/link_spotify", methods=['GET', 'POST'])
 @jwt_required
@@ -227,18 +213,12 @@ def link_spotify():
     if not auth_manager.get_cached_token():
         auth_url = auth_manager.get_authorize_url()
 
-    ret = {
-        'access_token': create_access_token(identity=users_schema.dump(user), expires_delta=expires), # access_tokens identity contains entire user info from table
-        'refresh_token': create_refresh_token(identity=users_schema.dump(user), expires_delta=expires), # refresh_tokens identity contains entire user info from table
-        'email': user.email,
-        'username': user.username,
-        'user_id': user.user_id,
-        'firstname': user.firstname,
-        'lastname': user.lastname,
-        'appcolor': user.appcolor,
-        'auth_url': auth_url,
-        'spotify_account': user.spotify_account
-    }
+    users_schema = UsersSchema()
+    spotify_linked = is_users_spotify_linked(user.username)
+    ret = users_schema.dump(user)
+    ret['spotify_linked'] = spotify_linked
+    ret['auth_url'] = auth_url
+    
     return jsonify(ret), 200
 
 @auth.route("/api/auth/link_spotify_callback", methods=['GET', 'POST'])
@@ -263,4 +243,4 @@ def link_spotify_callback():
     to_file.close()
     from_file.close()
     os.remove(session_cache_path(cache_file))
-    return redirect(current_app.config['FRONTEND_URL'] + '/#/profile')
+    return redirect(current_app.config['FRONTEND_URL'] + '#/profile')

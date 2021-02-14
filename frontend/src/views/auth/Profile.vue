@@ -1,96 +1,103 @@
 <template>
   <div>
-    <b-jumbotron>
-      <b-row>
-        <b-col>
-          <h3>
-            <strong>Username:</strong>
-            {{currentUser.username}}
-          </h3>
-          <br />
-          <h3>
-            {{currentUser.firstname}} {{currentUser.lastname}}
-          </h3>
-        </b-col>
-        <b-col col lg="2">
-          <avatar/>
-        </b-col>
-      </b-row>
-      
-      
-    </b-jumbotron>
-    <p>
-      <strong>Token:</strong>
-      {{currentUser.access_token.substring(0, 20)}} ... {{currentUser.access_token.substr(currentUser.access_token.length - 20)}}
-    </p>
-    <p>
-      <strong>Id:</strong>
-      {{currentUser.user_id}}
-    </p>
-    <p>
-      <strong>Email:</strong>
-      {{currentUser.email}}
-    </p>
-    <b-button @click="logout()" pill class="m-2 custom-btn">
-      <b-icon icon="power" aria-hidden="true"></b-icon> Logout
-    </b-button>
-    <b-button v-b-modal.edit-profile pill class="m-2 custom-btn">
-      <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Edit Profile
-    </b-button>
-    <!-- <b-button v-if="!currentUser.spotify_account" v-b-modal.edit-spotify-account variant="outline-info" class="mb-2"> -->
-    <b-button v-b-modal.edit-spotify-account pill class="m-2 custom-btn">
-      <b-icon icon="pencil-square" aria-hidden="true"></b-icon> Link Spotify
-    </b-button>
+    <b-container fluid>
+      <b-overlay :show="userProfileLoading" opacity="0.95" rounded="sm">
+        <b-card>
+          <b-container fluid>
+          <b-row class="avatar-row">
+            <b-col cols="6">
+              <b-avatar class="avatar" variant="info" :text="getAvatarText()" size="6rem"></b-avatar>
+            </b-col>
+            <b-col cols="6" class="edit-profile">
+              <b-button v-if="!user.spotify_linked && user.username == currentUser.username" v-b-modal.edit-spotify-account pill class="m-2 custom-btn">Link Spotify</b-button>
+              <b-button v-if="user.username == currentUser.username" v-b-modal.edit-profile pill class="m-2 custom-btn">Edit Profile</b-button>
+            </b-col>
+          </b-row>
 
-    <label class="switch">
-      <input id="themeToggle" type="checkbox" @click="toggleTheme()">
-      <span class="slider round"></span>
-    </label>
+          <b-row class="display-name">
+            <span>{{user.firstname}} {{user.lastname}}</span>
+          </b-row>
 
-    <br />
-    <app-color-picker class="column"/>
-    <br />
+          <b-row class="username" v-if="user.username">
+            <span>@{{user.username}}</span>
+          </b-row>
+
+          <b-row class="bio" v-if="user.bio">
+            <p>
+              {{user.bio}}
+            </p>
+          </b-row>
+          </b-container>
+        </b-card>
+      </b-overlay>
+    </b-container>
+
     <themed-divider></themed-divider>
+
+    <b-tabs content-class="mt-3" justified class="profile-tabs">
+      <b-tab title="Posts" active>
+        <b-overlay :show="userPostsLoading" opacity="0.95" rounded="sm">
+          <div v-for="(post, index) in posts" :key="index">
+            <post-card :post="post"/>
+          </div>
+        </b-overlay>
+      </b-tab>
+      <b-tab title="Music">
+        <p v-if="user.spotify_linked">Showing short-term top tracks</p>
+        <p v-if="!user.spotify_linked">This user is not connected to Spotify</p>
+        <div v-for="(song, index) in songs" :key="index">
+          <song-card :song="song"/>
+        </div>
+      </b-tab>
+    </b-tabs>
     <!-- Modal -->
     <b-modal id="edit-profile" title="Edit Profile" ok-title="Save" @ok="handleOk">
       <b-form @submit.stop.prevent="onSubmit" ref="form" v-if="show">
-        <b-form-group
-          id="input-group-1"
-          label="First Name"
-          label-for="input-1"
-        >
-          <b-form-input
-            id="input-1"
-            name="input-1"
-            v-model="form.firstname"
-            type="text"
-            placeholder="Enter first name"
-            v-validate="{ required: true, min: 2 }"
-            :state="validateState('input-1')"
-            aria-describedby="input-1-live-feedback"
-            data-vv-as="First Name"
-          ></b-form-input>
-          <b-form-invalid-feedback id="input-1-live-feedback">{{ veeErrors.first('input-1') }}</b-form-invalid-feedback>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-2"
-          label="Last Name"
-          label-for="input-2"
-        >
-          <b-form-input
-            id="input-2"
-            name="input-2"
-            v-model="form.lastname"
-            type="text"
-            placeholder="Enter last name"
-            v-validate="{ required: true, min: 2 }"
-            :state="validateState('input-2')"
-            aria-describedby="input-2-live-feedback"
-            data-vv-as="Last Name"
-          ></b-form-input>
-          <b-form-invalid-feedback id="input-2-live-feedback">{{ veeErrors.first('input-2') }}</b-form-invalid-feedback>
-        </b-form-group>
+        <b-row>
+          <b-col>
+            <b-form-group
+              id="input-group-1"
+              label="First Name"
+              label-for="input-1"
+            >
+              <b-form-input
+                autocomplete="off"
+                id="input-1"
+                name="input-1"
+                v-model="form.firstname"
+                type="text"
+                placeholder="Enter first name"
+                v-validate="{ required: true, min: 2 }"
+                :state="validateState('input-1')"
+                aria-describedby="input-1-live-feedback"
+                data-vv-as="First Name"
+              ></b-form-input>
+              <b-form-invalid-feedback id="input-1-live-feedback">{{ veeErrors.first('input-1') }}</b-form-invalid-feedback>
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              id="input-group-2"
+              label="Last Name"
+              label-for="input-2"
+            >
+              <b-form-input
+                autocomplete="off"
+                id="input-2"
+                name="input-2"
+                v-model="form.lastname"
+                type="text"
+                placeholder="Enter last name"
+                v-validate="{ required: true, min: 2 }"
+                :state="validateState('input-2')"
+                aria-describedby="input-2-live-feedback"
+                data-vv-as="Last Name"
+              ></b-form-input>
+              <b-form-invalid-feedback id="input-2-live-feedback">{{ veeErrors.first('input-2') }}</b-form-invalid-feedback>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      
 
         <b-form-group
           id="input-group-3"
@@ -98,6 +105,7 @@
           label-for="input-3"
         >
           <b-form-input
+            autocomplete="off"
             id="input-3"
             name="input-3"
             v-model="form.username"
@@ -117,6 +125,7 @@
           label-for="input-4"
         >
           <b-form-input
+            autocomplete="off"
             id="input-4"
             name="input-4"
             v-model="form.email"
@@ -128,6 +137,26 @@
             data-vv-as="Email"
           ></b-form-input>
           <b-form-invalid-feedback id="input-4-live-feedback">{{ veeErrors.first('input-4') }}</b-form-invalid-feedback>
+        </b-form-group>
+
+        <b-form-group
+          id="input-group-5"
+          label="Bio"
+          label-for="input-5"
+        >
+        <b-form-textarea
+          id="input-5"
+          name="input-5"
+          placeholder="Enter something about yourself..."
+          rows="3"
+          v-model="form.bio"
+          no-resize
+          v-validate="{ max: 160 }"
+          :state="validateState('input-5')"
+          aria-describedby="input-5-live-feedback"
+          data-vv-as="Bio"
+        ></b-form-textarea>
+        <b-form-invalid-feedback id="input-5-live-feedback">{{ veeErrors.first('input-5') }}</b-form-invalid-feedback>
         </b-form-group>
 
         </b-form>
@@ -158,14 +187,15 @@
 </template>
 
 <script>
-import Avatar from '@/components/Avatar';
-import AppColorPicker from '@/components/AppColorPicker';
-import { mapMutations } from 'vuex';
+import axios from 'axios';
+import authHeader from '../../services/auth/auth-header';
+import SongCard from '../../components/SongCard.vue';
+import PostCard from '../../components/PostCard.vue';
 export default {
   name: 'Profile',
   components: {
-       'Avatar': Avatar,
-       'AppColorPicker': AppColorPicker
+       'SongCard': SongCard,
+       'PostCard': PostCard
    },
   computed: {
     currentUser() {
@@ -173,21 +203,9 @@ export default {
     },
     currentTheme() {
       return this.$store.state.theme;
-    }
+    },
   },
   mounted() {
-    if (this.currentTheme == 'light'){
-      this.checked = false;
-    } else {
-      this.checked = true;
-    }
-
-    if (this.currentTheme == 'light') {
-        document.getElementById("themeToggle").checked = false;
-    } else {
-        document.getElementById("themeToggle").checked = true;
-    }
-
     if (!this.currentUser) {
       this.$router.push('/login');
     }
@@ -195,8 +213,7 @@ export default {
   data() {
     return {
       selectedTheme: '',
-      checked: null,
-      loading: false,
+      loading: true,
       message: '',
       successful: '',
       form: {
@@ -204,27 +221,70 @@ export default {
           lastname: '',
           email: '',
           username: '', 
-          spotify_account: ''
+          spotify_account: '',
+          bio: ''
       },
-      show: true
+      user: {},
+      show: true,
+      songs: [],
+      posts: []
     };
   },
   created() {
+    this.getUserInfo();
+    this.getUserPosts();
+    this.getMusic();
     this.form.firstname = this.$store.state.auth.user.firstname;
     this.form.lastname = this.$store.state.auth.user.lastname;
     this.form.email = this.$store.state.auth.user.email;
     this.form.username = this.$store.state.auth.user.username;
     this.form.spotify_account = this.$store.state.auth.user.spotify_account;
+    this.form.bio = this.$store.state.auth.user.bio;
   },
   methods: {
-    ...mapMutations([
-      'toggleTheme',
-      'setDefaultAppColor'
-    ]),
-    logout() {
-      this.$store.dispatch('auth/logout');
-      this.setDefaultAppColor();
-      this.$router.push('/login');
+    // TODO: Execute asynchronously in promise
+    getUserInfo() {
+      this.userProfileLoading = true;
+      const path = 'http://localhost/api/auth/get_user_info/' + this.$router.currentRoute.params.username;
+      axios.get(path, {
+        headers: authHeader()
+      })
+      .then((res) => {
+        // this.userInfo = res.data.userInfo ? res.data.userInfo : res.data.status
+        this.user = res.data.userInfo;
+        this.userProfileLoading = false;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    },
+    getUserPosts() {
+      this.userPostsLoading = true;
+      const path = 'http://localhost/api/social/get_posts/' + this.$router.currentRoute.params.username;
+      axios.get(path, {
+        headers: authHeader()
+      })
+      .then((res)=>{
+        this.posts = res.data;
+        this.userPostsLoading = false;
+      })
+      .catch((error)=>{
+        console.error(error);
+        this.post = 'Could not load posts'
+      });
+    },
+    getMusic() {
+      const path = 'http://localhost/api/music/get_music/' + this.$router.currentRoute.params.username;
+      axios.get(path, {
+        headers: authHeader()
+      })
+      .then((res)=>{
+        this.songs = res.data
+      })
+      .catch((error)=>{
+        console.error(error);
+        this.post = 'Could not load posts'
+      });
     },
     editProfile() {
       this.$router.push('/editProfile');
@@ -297,7 +357,40 @@ export default {
         bvModalEvt.preventDefault()
         // Trigger submit handler
         this.onSubmitSpotify()
+    },
+    getAvatarText() {
+      try {
+        let firstInitial = this.user.firstname.charAt(0);
+        let lastInitial = this.user.lastname.charAt(0);
+        return firstInitial.toUpperCase() + lastInitial.toUpperCase();
+      }
+      catch(err) {
+        return "";
+      }
+        
     }
   }
 };
 </script>
+
+<style scoped>
+.edit-profile {
+  text-align: right;
+}
+
+.avatar-row {
+  align-items: center;
+}
+
+.display-name {
+  padding-top: 10px;
+}
+
+.display-name > span {
+  font-size: 2rem;
+}
+
+.bio {
+  padding-top: 5px;
+}
+</style>

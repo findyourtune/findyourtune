@@ -60,7 +60,8 @@ class AuthService {
       firstname: form.firstname,
       lastname: form.lastname,
       username: form.username,
-      email: form.email
+      email: form.email,
+      bio: form.bio
     }, { headers: authHeader() })
     .then(response => {
       if (response.data.access_token) {

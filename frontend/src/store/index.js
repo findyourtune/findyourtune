@@ -4,7 +4,7 @@ import { auth } from '../services/auth/auth-module'
 
 Vue.use(Vuex);
 
-const defaultAppColor = '#ffadad';
+const defaultAppColor = '#34bbe6';
 const lightColor = '#f8f8f8';
 const darkColor = '#303030';
 // TODO: choose default value

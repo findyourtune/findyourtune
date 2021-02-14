@@ -121,6 +121,7 @@
     </b-form-group>
 
     <themed-btn type="submit" variant="primary">Sign Up</themed-btn>
+    <!-- <button class="btn btn-primary" type="submit">Sign Up</button> -->
     </b-form>
     <b-card class="mt-3" header="Form Data Result">
       <pre class="m-0">{{ form }}</pre>
@@ -162,7 +163,7 @@ export default {
   },
   mounted() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/u/' + this.$store.state.auth.user.username);
     }
   },
   methods: {
