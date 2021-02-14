@@ -194,54 +194,6 @@ strong {
     opacity: 1;
 }
 
-.btn-primary {
-    color: var(--app-color);
-    background-color: transparent;
-    border-color: var(--app-color);
-}
-
-.btn-primary:hover {
-    color: var(--light);
-    background-color: var(--app-color);
-    border-color: var(--app-color);
-}
-
-.btn-primary:not(:disabled):not(.disabled):active {
-    color: var(--light);
-    background-color: var(--app-color);
-    border-color: var(--app-color);
-}
-
-.btn-primary:not(:disabled):not(.disabled):focus {
-    color: var(--app-color);
-    background-color: transparent;
-    border-color: var(--app-color);
-}
-
-.btn-secondary {
-    color: var(--font-color);
-    background-color: transparent;
-    border-color: var(--font-color2);
-}
-
-.btn-secondary:hover {
-    color: var(--light);
-    background-color: var(--font-color2);
-    border-color: var(--font-color2);
-}
-
-.btn-secondary:not(:disabled):not(.disabled):active {
-    color: var(--light);
-    background-color: var(--font-color2);
-    border-color: var(--font-color2);
-}
-
-.btn-secondary:not(:disabled):not(.disabled):focus {
-    color: var(--font-color2);
-    background-color: transparent;
-    border-color: var(--font-color2);
-}
-
 .form-control {
     background-color: var(--bg2) !important;
     color: var(--font-color);
