@@ -5,17 +5,17 @@
         <div>
           <router-link to="/" exact>Home</router-link>
         </div>
-        <div>
-          <router-link to="/courses" exact>About</router-link>
+        <div v-if="loggedIn">
+          <router-link to="/courses" exact>Messages</router-link>
         </div>
-        <div>
+        <div v-if="!loggedIn">
           <router-link to="/login" exact>Log In</router-link>
         </div>
-        <div>
+        <div v-if="!loggedIn">
           <router-link to="/register" exact>Register</router-link>
         </div>
-        <div>
-          <router-link to="/profile" exact>Profile</router-link>
+        <div v-if="loggedIn">
+          <router-link :to=profileLink exact>Profile</router-link>
         </div>
       </div>
     </div>
@@ -24,13 +24,24 @@
 
 <script>
 export default {
-    name: 'SideBarLeft'
+    name: 'SideBarLeft',
+    computed: {
+      currentUser() {
+        return this.$store.state.auth.user;
+      },
+      loggedIn() {
+        return this.$store.state.auth.status.loggedIn;
+      },
+      profileLink() {
+        return '/u/' + this.$store.state.auth.user.username;
+      }
+    },
 }
 </script>
 
 <style scoped>
 .sideBarLeft {
-  max-width: 400px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;

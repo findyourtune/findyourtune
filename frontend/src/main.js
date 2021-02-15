@@ -5,6 +5,7 @@ import { BootstrapVue, BootstrapVueIcons } from "bootstrap-vue";
 import store from './store';
 import router from './router';
 import * as VeeValidate from 'vee-validate';
+import DisableAutocomplete from 'vue-disable-autocomplete';
 import './components/styled-components';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -22,6 +23,7 @@ Vue.use(VeeValidate, {
   // This is not required but avoids possible naming conflicts
   errorBagName: 'veeErrors'
 })
+Vue.use(DisableAutocomplete);
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios

@@ -47,6 +47,7 @@
     --bg3: var(--sub-dark);
     --header-bg: var(--purple0);
     --font-color: var(--white);
+    --font-color2: rgb(110, 118, 125);
     --color: white;
     --color2: #b2becd;
     --btop: 1px solid #f8f8f8;
@@ -60,7 +61,8 @@
     --bg2: var(--light1);
     --bg3: var(--sub-light);
     --header-bg: var(--purple0);
-    --font-color: #030303;
+    --font-color: var(--dark0);
+    --font-color2: rgb(110, 118, 125);
     --color: #424242;
     --color2: #424242;
     --btop: 1px solid #424242;
@@ -79,7 +81,7 @@ body {
     color: var(--font-color);
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     color: var(--color);
 }
 
@@ -95,16 +97,69 @@ strong {
     color: var(--font-color);
 }
 
-.modal-content {
-    background-color: var(--bg);
+/* START - Custom Styling */
+.logout:hover {
+    color: var(--app-color);
+    text-decoration: underline;
 }
 
-.modal-open {
-    padding-right: 0 !important
+.custom-btn {
+    color: var(--app-color);
+    background-color: transparent;
+    border-color: var(--app-color);
 }
 
-.jumbotron {
-    background-color: var(--bg3);
+.custom-btn:hover {
+    color: var(--light);
+    background-color: var(--app-color);
+    border-color: var(--app-color);
+}
+
+.custom-btn:not(:disabled):not(.disabled):active {
+    color: var(--light);
+    background-color: var(--app-color);
+    border-color: var(--app-color);
+}
+
+.custom-btn:not(:disabled):not(.disabled):focus {
+    color: var(--app-color);
+    background-color: transparent;
+    border-color: var(--app-color);
+}
+
+.settings-gear{ 
+    color: var(--app-color);
+}
+
+.settings-gear:not(:disabled):not(.disabled):active {
+    /* color: var(--light); */
+    /* background-color: var(--app-color); */
+    border-color: var(--app-color);
+}
+
+.settings-gear:not(:disabled):not(.disabled):focus {
+    color: var(--app-color);
+    background-color: transparent;
+    border-color: var(--app-color);
+}
+
+.avatar {
+    background-color: var(--app-color);
+}
+
+.username {
+    font-size: .95rem;
+    color: var(--color2);
+}
+
+.dropdown-divider {
+    background-color: var(--app-color);
+}
+
+.artist-name {
+    font-style: italic;
+    font-size: .9rem;
+    color: var(--color2);
 }
 
 .view-password-btn {
@@ -114,8 +169,103 @@ strong {
 .view-password-btn:hover {
     opacity: 70%;
 }
+/* END - Custom Styling */
 
-/* Slider */
+
+/* START - Bootstrap Styling */
+.modal-content {
+    background-color: var(--bg);
+}
+
+.modal-open {
+    padding-right: 0 !important
+}
+
+.modal-backdrop {
+    z-index: 1;
+}
+
+.close {
+    color: var(--font-color);
+}
+
+.close:hover {
+    color: var(--app-color);
+    opacity: 1;
+}
+
+.form-control {
+    background-color: var(--bg2) !important;
+    color: var(--font-color);
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: var(--bg2);
+    border-color: var(--app-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.1rem var(--app-color);
+    color: var(--font-color);
+}
+
+.jumbotron {
+    background-color: var(--bg3);
+}
+
+.card {
+    background-color: var(--bg3);
+    color: inherit;
+}
+
+.dropdown-menu {
+    color: var(--font-color);
+    box-shadow: var(--app-color) 0px 0px 10px, var(--app-color) 0px 0px 1px 1px;
+    background-color: var(--bg);
+}
+
+.vue-swatches__trigger{
+    width: 35px !important;
+    height: 35px !important;
+} 
+
+.tabs {
+    display: block;
+}
+
+.tabs a {
+    color: var(--font-color2);
+    font-weight: 700;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: transparent;
+    border-top: transparent;
+    border-right: transparent;
+    border-left: transparent;
+    border-bottom: 1px solid var(--app-color);
+    color: var(--app-color);
+    font-weight: 700; 
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: var(--bg2);
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-bottom-color: var(--app-color);
+    color: var(--app-color);
+}
+
+.tabs ul {
+    border-bottom: 1px solid transparent;
+}
+
+.bg-light {
+    background-color: var(--bg) !important;
+}
+/* END - Bootstrap Styling */
+
+/* START - Sliders */
 .switch {
     position: relative;
     display: inline-block;
@@ -168,25 +318,22 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 
-/* Modal */
-.modal-backdrop {
-    z-index: 1;
-}
+/* END - Sliders */
 
 .timeline {
     position: relative;
     max-width: 1200px;
     margin: 0 auto;
-  }
-  
-  .timeline-item {
+}
+
+.timeline-item {
     padding: 10px 40px;
     position: relative;
     background-color: inherit;
     width: 50%;
-  }
-  
-  .timeline-item::after {
+}
+
+.timeline-item::after {
     content: "";
     position: absolute;
     width: 15px;
@@ -197,17 +344,17 @@ input:checked + .slider:before {
     top: 22px;
     border-radius: 50%;
     z-index: 1;
-  }
-  
-  .left {
+}
+
+.left {
     left: 0;
-  }
-  
-  .right {
+}
+
+.right {
     left: 50%;
-  }
-  
-  .left::before {
+}
+
+.left::before {
     content: " ";
     height: 0;
     position: absolute;
@@ -218,9 +365,9 @@ input:checked + .slider:before {
     border: medium solid white;
     border-width: 10px 0 10px 10px;
     border-color: transparent transparent transparent white;
-  }
-  
-  .right::before {
+}
+
+.right::before {
     content: " ";
     height: 0;
     position: absolute;
@@ -231,15 +378,15 @@ input:checked + .slider:before {
     border: medium solid white;
     border-width: 10px 10px 10px 0;
     border-color: transparent white transparent transparent;
-  }
-  
-  .right::after {
+}
+
+.right::after {
     left: -10px;
-  }
-  
-  .content {
+}
+
+.content {
     padding: 20px 30px;
     background-color: white;
     position: relative;
     border-radius: 6px;
-  }
+}

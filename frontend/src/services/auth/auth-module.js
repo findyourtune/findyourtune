@@ -138,13 +138,11 @@ export const auth = {
       state.status.loggedIn = true;
       state.user = user;
     },
-    updateAppColorSuccess(state, user) {
+    updateAppColorSuccess(state) {
       state.status.loggedIn = true;
-      state.user = user;
     },
-    updateAppColorFailure(state, user) {
+    updateAppColorFailure(state) {
       state.status.loggedIn = true;
-      state.user = user;
     },
     updateSpotifyAccountSuccess(state, user) {
       state.status.loggedIn = true;

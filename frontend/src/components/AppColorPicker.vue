@@ -6,6 +6,9 @@
     popover-x="right"
     @input="setAppColor($event)"
     :background-color="themeColor"
+    shapes="circles"
+    swatch-size="35"
+    class="app-color-picker"
   ></v-swatches>
 </template>
 
@@ -64,4 +67,7 @@ export default {
 </script>
 
 <style>
+.app-color-picker {
+  padding-left: 8px;
+}
 </style>

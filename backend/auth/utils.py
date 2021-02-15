@@ -8,10 +8,26 @@ from backend.models import Users
 from backend.errors.handlers import InvalidAPIUsage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from os import path
 import smtplib
 import os
 
 
+def session_cache_path(cache_file):
+    return './.spotify_caches/' + cache_file
+
+def is_users_spotify_linked(username):
+    user = Users.query.filter_by(username=username).first()
+
+    user_spotify_account = user.spotify_account
+    if user_spotify_account:
+        cache_directory = session_cache_path(user_spotify_account)
+        spotify_cache_file_exists = path.exists(cache_directory)
+        spotify_linked = True if spotify_cache_file_exists and user_spotify_account is not None else False
+        return spotify_linked
+    else:
+        return False
+    
 # Not yet implemented
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)

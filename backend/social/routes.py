@@ -4,13 +4,12 @@ from flask_session import Session
 from flask_wtf import Form
 from flask_jwt_extended import jwt_required
 from wtforms.fields.html5 import DateField
-import spotipy
 import uuid
 from backend import db
 
 from backend.models import Users, Posts, Comments, Likes, Direct_Messages, Follow_Requests, Follow_Relationship
 
-main = Blueprint('main', __name__)
+social = Blueprint('social', __name__)
 
 SCOPE = 'user-library-read user-read-playback-position'
 
@@ -32,11 +31,11 @@ COURSES = [
     }
 ] 
 
-@main.route("/")
+@social.route("/")
 def home():
     return 'Hello World'
 
-@main.route("/api/testapi", methods=['GET'])
+@social.route("/api/testapi", methods=['GET'])
 @jwt_required
 def testapi():
     return jsonify({
@@ -44,7 +43,7 @@ def testapi():
         'courses': COURSES
     })
 
-@main.route("/api/post", methods=['POST'])
+@social.route("/api/social/post", methods=['POST'])
 @jwt_required
 def post():
     data = request.json
@@ -60,8 +59,7 @@ def post():
     return jsonify({"msg": "Post created."}), 201
 
 
-@main.route("/api/post", methods=['GET'])
-@jwt_required
+@social.route("/api/social/get_posts", methods=['GET'])
 def get_posts():
     posts = Posts.query.order_by(Posts.timestamp.desc()).all()
 
@@ -76,8 +74,24 @@ def get_posts():
 
     return jsonify(all_posts), 200
 
+@social.route("/api/social/get_posts/<username>", methods=['GET'])
+def get_posts_user(username):
+    # posts = Posts.query.join(Users, Users.user_id == Posts.user_id).filter_by(user_id = Users.username).order_by(Posts.timestamp.desc()).all()
+    posts = db.session.query(Posts).join(Users, Users.user_id == Posts.user_id).filter(Users.username == username).order_by(Posts.timestamp.desc()).all()
 
-@main.route("/api/comment", methods=['POST'])
+    all_posts = [{
+        'post_id': post.post_id, 
+        'user_id': post.user_id, 
+        'name': Users.query.filter_by(user_id = post.user_id).first().firstname + " " + Users.query.filter_by(user_id = post.user_id).first().lastname,
+        'text': post.text, 
+        'spotify_data': post.spotify_data, 
+        'timestamp': post.timestamp
+        } for post in posts]
+
+    return jsonify(all_posts), 200
+
+
+@social.route("/api/social/comment", methods=['POST'])
 @jwt_required
 def comment():
     data = request.json
@@ -93,7 +107,7 @@ def comment():
     return jsonify({"msg": "Comment created."}), 201
 
 
-@main.route("/api/comment", methods=['GET'])
+@social.route("/api/social/comment", methods=['GET'])
 @jwt_required
 def get_comments():
     data = request.json
@@ -113,7 +127,7 @@ def get_comments():
     return jsonify(all_comments), 200
 
 
-@main.route("/api/like", methods=['POST'])
+@social.route("/api/social/like", methods=['POST'])
 @jwt_required
 def like():
     data = request.json
@@ -133,7 +147,7 @@ def like():
     return jsonify({"msg": "Like created."}), 201
 
 
-@main.route("/api/like", methods=['GET'])
+@social.route("/api/social/like", methods=['GET'])
 @jwt_required
 def get_likes():
     data = request.json
@@ -155,7 +169,7 @@ def get_likes():
     return jsonify(all_likes), 200
 
 
-@main.route("/api/directmessage", methods=['POST'])
+@social.route("/api/social/directmessage", methods=['POST'])
 @jwt_required
 def direct_message():
     data = request.json
@@ -169,7 +183,7 @@ def direct_message():
     return jsonify({"msg": "Direct Message sent."}), 201
 
 
-@main.route("/api/directmessage/<user_name>", methods=['GET'])
+@social.route("/api/social/directmessage/<user_name>", methods=['GET'])
 @jwt_required
 def get_direct_message(user_name):
     if Users.query.filter_by(username=user_name).first() is None:
@@ -201,7 +215,7 @@ def get_direct_message(user_name):
     return jsonify(sent_dms + received_dms), 200
 
 
-@main.route("/api/followrequest", methods=['POST'])
+@social.route("/api/social/followrequest", methods=['POST'])
 @jwt_required
 def follow_request():
     data = request.json
@@ -215,7 +229,7 @@ def follow_request():
     return jsonify({"msg": "Follow Request sent."}), 201
 
 
-@main.route("/api/followrequest/<user_name>", methods=['GET'])
+@social.route("/api/social/followrequest/<user_name>", methods=['GET'])
 @jwt_required
 def get_requests(user_name):
     if Users.query.filter_by(username=user_name).first() is None:
@@ -235,7 +249,7 @@ def get_requests(user_name):
     return jsonify(all_requests), 200
 
 
-@main.route("/api/relationship", methods=['POST'])
+@social.route("/api/social/relationship", methods=['POST'])
 @jwt_required
 def relationship():
     data = request.json
@@ -255,7 +269,7 @@ def relationship():
 
 
 
-@main.route("/api/relationship/<user_name>", methods=['GET'])
+@social.route("/api/social/relationship/<user_name>", methods=['GET'])
 @jwt_required
 def get_relationships(user_name):
     if Users.query.filter_by(username=user_name).first() is None:

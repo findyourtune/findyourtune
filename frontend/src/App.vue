@@ -27,7 +27,10 @@ export default {
       return {
         '--app-color': (this.$store.state.appColor)
       }
-    }
+    },
+  },
+  mounted() {
+    document.body.style = '--app-color:' + this.$store.state.appColor;
   },
   components: {
     Header,
@@ -73,7 +76,7 @@ export default {
 }
 
 .main-content {
-  width: 800px;
+  width: 500px;
   flex-basis: auto;
   flex-shrink: 0; 
   padding: 10px 15px;

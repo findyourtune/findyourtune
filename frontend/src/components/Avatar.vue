@@ -1,5 +1,6 @@
+// Deprecated
 <template>
-  <b-avatar variant="info" :text="getAvatarText()" size="6rem"></b-avatar>
+  <b-avatar class="avatar" variant="info" :text="getAvatarText()" size="6rem"></b-avatar>
 </template>
 
 <script>

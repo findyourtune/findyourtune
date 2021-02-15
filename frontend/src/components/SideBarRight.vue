@@ -23,7 +23,7 @@ export default {
   -webkit-box-align: start;
   align-items: flex-start;
   border-left: 1px solid var(--app-color);
-  flex-grow: 1;
+  flex-grow: 2;
   flex-basis: 0;
   flex-shrink: 0;
 }
