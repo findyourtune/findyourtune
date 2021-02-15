@@ -169,6 +169,20 @@ strong {
 .view-password-btn:hover {
     opacity: 70%;
 }
+
+.follow-counts {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+.follow-counts > div:first-child {
+    margin-right: 15px;
+}
+
+.follow-counts > div > span {
+    color: var(--color2);
+}
 /* END - Custom Styling */
 
 

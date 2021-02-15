@@ -170,7 +170,7 @@ class Follow_Relationship(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"Relationship(relationship_id: '{self.request_id}', timestamp: '{self.timestamp}')"
+        return f"Relationship(relationship_id: '{self.relationship_id}', timestamp: '{self.timestamp}')"
 
 
 class FollowRelationshipSchema(ma.SQLAlchemySchema):
