@@ -8,9 +8,11 @@
     <div id="postbutton">
       <b-button pill variant="success" v-on:click="postPost">Post</b-button>
     </div>
-    <div v-for="(post, index) in posts" :key="index">
-      <post-card :post="post"/>
-    </div>
+    <b-overlay :show="userPostsLoading" opacity="0.95" rounded="sm">
+      <div v-for="(post, index) in posts" :key="index">
+        <post-card :post="post"/>
+      </div>
+    </b-overlay>
   </div>
 </template>
 
@@ -38,12 +40,14 @@ export default {
   },
   methods: {
     getPosts() {
+      this.userPostsLoading = true;
       const path = 'http://localhost/api/social/get_posts';
       axios.get(path, {
         headers: authHeader()
       })
       .then((res)=>{
-        this.posts = res.data
+        this.posts = res.data;
+        this.userPostsLoading = false;
       })
       .catch((error)=>{
         console.error(error);

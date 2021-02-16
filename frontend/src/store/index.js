@@ -11,7 +11,8 @@ const darkColor = '#303030';
 const state = {
   appColor: defaultAppColor,
   themeColor: darkColor,
-  theme: 'dark'
+  theme: 'dark',
+  defaultAppColor: defaultAppColor
 };
 
 const mutations = {

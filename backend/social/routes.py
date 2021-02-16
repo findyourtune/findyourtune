@@ -5,9 +5,12 @@ from flask_wtf import Form
 from flask_jwt_extended import jwt_required
 from wtforms.fields.html5 import DateField
 import uuid
+import jwt
 from backend import db
+from sqlalchemy.orm import aliased
 
-from backend.models import Users, Posts, Comments, Likes, Direct_Messages, Follow_Requests, Follow_Relationship
+
+from backend.models import Users, Posts, Comments, Likes, Direct_Messages, Follow_Requests, Follow_Relationship, Users, UsersSchema
 
 social = Blueprint('social', __name__)
 
@@ -248,10 +251,9 @@ def get_requests(user_name):
 
     return jsonify(all_requests), 200
 
-
-@social.route("/api/social/relationship", methods=['POST'])
+@social.route("/api/social/follow_user", methods=['POST'])
 @jwt_required
-def relationship():
+def follow_user():
     data = request.json
 
     if Users.query.filter_by(username=data['follower_username']).first() is None:
@@ -268,30 +270,67 @@ def relationship():
     return jsonify({"msg": "Relationship created."}), 201
 
 
-
-@social.route("/api/social/relationship/<user_name>", methods=['GET'])
+@social.route("/api/social/unfollow_user", methods=['POST'])
 @jwt_required
-def get_relationships(user_name):
-    if Users.query.filter_by(username=user_name).first() is None:
+def unfollow_user():
+    data = request.json
+
+    if Users.query.filter_by(username=data['follower_username']).first() is None:
+        return jsonify({"msg": "Follower user does not exist."}), 500
+    elif Users.query.filter_by(username=data['followed_username']).first() is None:
+        return jsonify({"msg": "Followed user does not exist."}), 500
+
+    follower_relationship_id = Users.query.filter_by(username=data['follower_username']).first()
+    followed_relationship_id = Users.query.filter_by(username=data['followed_username']).first()
+
+    Follow_Relationship.query.filter_by(follower_id=follower_relationship_id.user_id, followed_id=followed_relationship_id.user_id).delete()
+    db.session.commit()
+    return jsonify({"msg": "Relationship created."}), 201
+
+
+@social.route("/api/social/relationship/<username>", methods=['GET'])
+@jwt_required
+def get_relationships(username):
+    if Users.query.filter_by(username=username).first() is None:
         return jsonify({"msg": "User does not exist."}), 500
 
-    relationship_user_id = Users.query.filter_by(username=user_name).first()
+    user1 = aliased(Users)
+    user2 = aliased(Users)  
 
-    follower_relationships = Follow_Relationship.query.filter_by(follower_id=relationship_user_id.user_id)
-    followed_relationships = Follow_Relationship.query.filter_by(followed_id=relationship_user_id.user_id)
+    # Follower Relationships                                                
+    follower_relationships = db.session.query(user1.username.label('u_username'), user2.username.label('f_username'), user2.firstname.label('f_firstname'), user2.lastname.label('f_lastname'), user2.appcolor.label('f_appColor'), Follow_Relationship)\
+                                        .join(Follow_Relationship, (Follow_Relationship.followed_id == user1.user_id))\
+                                        .join(user2, user2.user_id == Follow_Relationship.follower_id)\
+                                        .filter(user1.username == username)\
+                                        .order_by(Follow_Relationship.timestamp.desc()).all()  
+    
+    # Following Relationships    
+    following_relationships = db.session.query(user1.username.label('u_username'), user2.username.label('f_username'), user2.firstname.label('f_firstname'), user2.lastname.label('f_lastname'), user2.appcolor.label('f_appColor'), Follow_Relationship)\
+                                        .join(Follow_Relationship, (Follow_Relationship.follower_id == user1.user_id))\
+                                        .join(user2, user2.user_id == Follow_Relationship.followed_id)\
+                                        .filter(user1.username == username)\
+                                        .order_by(Follow_Relationship.timestamp.desc()).all()  
 
     all_follower_relationships = [{
-        'relationship_id': relationship.relationship_id,
-        'follower_id': relationship.follower_id,
-        'follower_id': relationship.followed_id,
-        'timestamp': relationship.timestamp
+        'user_username': relationship.f_username,
+        'user_firstname': relationship.f_firstname,
+        'user_lastname': relationship.f_lastname,
+        'user_appcolor': relationship.f_appColor,
+        'timestamp': relationship.Follow_Relationship.timestamp
         } for relationship in follower_relationships]
 
-    all_followed_relationships = [{
-        'relationship_id': relationship.relationship_id,
-        'follower_id': relationship.follower_id,
-        'follower_id': relationship.followed_id,
-        'timestamp': relationship.timestamp
-        } for relationship in followed_relationships]
+    all_following_relationships = [{
+        'user_username': relationship.f_username,
+        'user_firstname': relationship.f_firstname,
+        'user_lastname': relationship.f_lastname,
+        'user_appcolor': relationship.f_appColor,
+        'timestamp': relationship.Follow_Relationship.timestamp,
+        'user_followed': True
+        } for relationship in following_relationships]
 
-    return jsonify(all_follower_relationships + all_followed_relationships), 200
+    user_follow_rels = {
+        'follower_rels': all_follower_relationships,
+        'following_rels': all_following_relationships
+    }
+
+    return jsonify(user_follow_rels), 200

@@ -5,7 +5,7 @@ from flask_jwt_extended import (
     jwt_refresh_token_required, get_raw_jwt
 )
 from backend import db, bcrypt
-from backend.models import Users, UsersSchema
+from backend.models import Users, UsersSchema, Follow_Relationship
 from backend.auth.utils import session_cache_path, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
@@ -94,23 +94,44 @@ def protected():
 @auth.route("/api/auth/get_user_info/<username>", methods=['GET'])
 @jwt_required
 def getUserInfo(username):
-    data = request
     users_schema = UsersSchema()
-    # Code takes jwt token from request params
-    # token = request.args.get("access_token")
 
-    # Code takes jwt token from request header
-    # token = request.headers['Authorization']
-    # token2 = token.split(' ')
-    # headerToken = token2[1]
+    token = request.headers['Authorization']
+    token2 = token.split(' ')
+    headerToken = token2[1]
 
-    # decoded = jwt.decode(headerToken, verify=False)
-    # print(decoded['identity'])
-    # user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    decoded = jwt.decode(headerToken, verify=False)
+    current_username = decoded['identity']['username']
+
     user = Users.query.filter_by(username=username).first()
+
+    # Is user linked to Spotify
     spotify_linked = is_users_spotify_linked(user.username)
+    
+    # Does requesting user follow user
+    if current_username != username:
+        follows = db.session.query(Follow_Relationship).join(Users, (Users.user_id == Follow_Relationship.followed_id and current_username == Follow_Relationship.follower_id))\
+                                                        .filter(Users.username == username).first()                                   
+        if follows is not None:
+            user_followed = True
+        else:
+            user_followed = False
+    else:
+        user_followed = None
+
+    # Follower count
+    follower_count = db.session.query(Follow_Relationship).join(Users, (Users.user_id == Follow_Relationship.followed_id))\
+                                                        .filter(Users.username == username).count()                         
+
+    # Following count
+    following_count = db.session.query(Follow_Relationship).join(Users, (Users.user_id == Follow_Relationship.follower_id))\
+                                                        .filter(Users.username == username).count()        
+
     userInfo = users_schema.dump(user)
     userInfo['spotify_linked'] = spotify_linked
+    userInfo['user_followed'] = user_followed
+    userInfo['follower_count'] = follower_count
+    userInfo['following_count'] = following_count
 
     return jsonify({
         'status': 'success',
