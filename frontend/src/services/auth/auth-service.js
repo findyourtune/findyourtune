@@ -2,8 +2,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 import store from '../../store';
-
-const AUTH_URL = 'http://127.0.0.1/api/auth/';
+let package = require('../../../package.json');
+const AUTH_URL = package.envConfig.apiUrl + '/api/auth/';
 
 class AuthService {
   login(form) {

@@ -35,7 +35,7 @@
   name: 'Courses',
   data() {
     return {
-      courses: [],
+    courses: [],
     };
   },
   computed: { // Returns stored user info and assigns to currentUser object
@@ -45,7 +45,7 @@
   },
   methods: {
     getCourses() {
-      const path = 'http://localhost/api/testapi';
+      const path = this.$apiUrl + '/api/testapi';
       axios.get(path, { headers: authHeader() })
         .then((res) => {
           this.courses = res.data.courses;

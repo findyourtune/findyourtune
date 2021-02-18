@@ -41,7 +41,7 @@ export default {
     getSearch() {
       this.searchStringPrev = this.searchString;
       this.searchLoading = true;
-      const path = 'http://localhost/api/search/search_users/' + this.searchString;
+      const path = this.$apiUrl + '/api/search/search_users/' + this.searchString;
       axios.get(path, {
         headers: authHeader()
       })

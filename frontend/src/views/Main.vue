@@ -41,7 +41,7 @@ export default {
   methods: {
     getPosts() {
       this.userPostsLoading = true;
-      const path = 'http://localhost/api/social/get_posts';
+      const path = this.$apiUrl + '/api/social/get_posts';
       axios.get(path, {
         headers: authHeader()
       })
@@ -55,7 +55,7 @@ export default {
       });
     },
     postPost() {
-      const path = 'http://localhost/api/social/post';
+      const path = this.$apiUrl + '/api/social/post';
       const data = { username: this.currentUser.username, text: this.tweet, spotify_data: null}
       axios.post(path, data, {
         headers: authHeader()

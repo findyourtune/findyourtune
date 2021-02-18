@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     followUser() {
-      const path = "http://localhost/api/social/follow_user";
+      const path = this.$apiUrl + "/api/social/follow_user";
       const data = {
         follower_username: this.currentUser.username,
         followed_username: this.user.user_username,
@@ -84,7 +84,7 @@ export default {
         });
     },
     unfollowUser() {
-      const path = "http://localhost/api/social/unfollow_user";
+      const path = this.$apiUrl + "/api/social/unfollow_user";
       const data = {
         follower_username: this.currentUser.username,
         followed_username: this.user.user_username,
