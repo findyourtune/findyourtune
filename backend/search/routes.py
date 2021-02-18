@@ -22,15 +22,13 @@ def search_users(search_string):
                                Users.firstname.ilike('%' + search_string + '%') | 
                                Users.lastname.ilike('%' + search_string + '%') 
                               )
-    print( users )
     results = []
     for user in users:
         user_dict = {
             'username': user.username,
             'firstname': user.firstname,
             'lastname': user.lastname,
-            'spotify_account': user.spotify_account,
-            ''
+            'spotify_account': user.spotify_account
         }
         results.append(user_dict)
     return( jsonify(results) )
