@@ -8,6 +8,9 @@
         <div v-if="loggedIn">
           <router-link to="/courses" exact>Messages</router-link>
         </div>
+        <div v-if="loggedIn">
+          <router-link to="/search" exact>Search</router-link>
+        </div>
         <div v-if="!loggedIn">
           <router-link to="/login" exact>Log In</router-link>
         </div>

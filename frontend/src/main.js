@@ -13,6 +13,8 @@ import 'bootstrap-vue/dist/bootstrap-vue-icons.min.css'
 import 'bulma/css/bulma.css';
 import './static/app.css';
 
+let packagejson = require('../package.json');
+
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(VeeValidate, {
@@ -27,7 +29,7 @@ Vue.use(DisableAutocomplete);
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
-
+Vue.prototype.$apiUrl = packagejson.envConfig.apiUrl;
 
 new Vue({
   store,

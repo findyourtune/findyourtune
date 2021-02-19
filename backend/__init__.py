@@ -40,11 +40,13 @@ def create_app(config_class=Config):
         jti = decrypted_token['jti']
         return jti in blacklist
 
+    from backend.search.routes import search
     from backend.social.routes import social
     from backend.auth.routes import auth
     from backend.music.routes import music
     from backend.errors.handlers import errors    
     
+    app.register_blueprint(search)
     app.register_blueprint(social)   
     app.register_blueprint(auth)
     app.register_blueprint(music)
