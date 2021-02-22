@@ -349,7 +349,7 @@ export default {
     getUserInfo() {
       this.userProfileLoading = true;
       const path =
-        "http://localhost/api/auth/get_user_info/" +
+        this.$apiUrl + "/api/auth/get_user_info/" +
         this.$router.currentRoute.params.username;
       axios
         .get(path, {
@@ -371,7 +371,7 @@ export default {
     getUserPosts() {
       this.userPostsLoading = true;
       const path =
-        "http://localhost/api/social/get_posts/" +
+        this.$apiUrl + "/api/social/get_posts/" +
         this.$router.currentRoute.params.username;
       axios
         .get(path, {
@@ -387,7 +387,7 @@ export default {
     },
     getMusic() {
       const path =
-        "http://localhost/api/music/get_music/" +
+        this.$apiUrl + "/api/music/get_music/" +
         this.$router.currentRoute.params.username;
       axios
         .get(path, {
@@ -401,7 +401,7 @@ export default {
         });
     },
     followUser() {
-      const path = "http://localhost/api/social/follow_user";
+      const path = this.$apiUrl + "/api/social/follow_user";
       const data = {
         follower_username: this.currentUser.username,
         followed_username: this.user.username,
@@ -419,7 +419,7 @@ export default {
         });
     },
     unfollowUser() {
-      const path = "http://localhost/api/social/unfollow_user";
+      const path = this.$apiUrl + "/api/social/unfollow_user";
       const data = {
         follower_username: this.currentUser.username,
         followed_username: this.user.username,
@@ -440,7 +440,7 @@ export default {
 			this.activeTab = activateTab;
       this.userFollowLoading = true;
       const path =
-        "http://localhost/api/social/relationship/" +
+        this.$apiUrl + "/api/social/relationship/" +
         this.$router.currentRoute.params.username;
       axios
         .get(path, {

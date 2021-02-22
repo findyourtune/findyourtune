@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Main from '../views/Main.vue'
 import Courses from '../views/Courses.vue'
+import Search from '../views/Search.vue'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import Profile from '../views/auth/Profile.vue'
@@ -15,6 +16,7 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Main, props: { msg: 'Home' }, name: 'home' },
     { path: '/courses', component: Courses, name: 'courses' },
+    { path: '/search', component: Search, name: 'search' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
     { path: '/u/:username', component: Profile, name: 'profile' },
