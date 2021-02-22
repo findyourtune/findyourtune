@@ -28,6 +28,7 @@
     --light0: #f8f8f8;
     --light1: #dbe1e8;
     --light2: #b2becd;
+    --light3: #ebf0f5;
     --sub-light:  #e9ecef;
     --dark0: #303030;
     --dark1: #424242;
@@ -57,9 +58,11 @@
 [data-theme="light"] {
     --link-color: #0a86da;
     --link-white-color: #c1bfbd;
-    --bg: var(--light0);
+    /* --bg: var(--light0); */
+    --bg: var(--light3);
     --bg2: var(--light1);
-    --bg3: var(--sub-light);
+    /* --bg3: var(--sub-light); */
+    --bg3: var(--light0);
     --header-bg: var(--purple0);
     --font-color: var(--dark0);
     --font-color2: rgb(110, 118, 125);

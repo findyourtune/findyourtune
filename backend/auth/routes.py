@@ -264,4 +264,6 @@ def link_spotify_callback():
     to_file.close()
     from_file.close()
     os.remove(session_cache_path(cache_file))
-    return redirect(current_app.config['FRONTEND_URL'] + '#/profile')
+
+    user = Users.query.filter_by(spotify_account=sp_user['id']).first()
+    return redirect(current_app.config['FRONTEND_URL'] + '#/u/' + user.username)

@@ -8,7 +8,7 @@
               <b-col>
                 <b-avatar
 									size="6rem"
-									id="test"
+									id="user-avatar"
                   variant="info"
                   :text="getAvatarText()"
                 ></b-avatar>
@@ -292,6 +292,9 @@ export default {
     currentTheme() {
       return this.$store.state.theme;
     },
+    appColor() {
+      return this.$store.state.appColor;
+    }
   },
   mounted() {
     if (!this.currentUser) {
@@ -335,6 +338,12 @@ export default {
     this.form.spotify_account = this.$store.state.auth.user.spotify_account;
     this.form.bio = this.$store.state.auth.user.bio;
   },
+  watch: {
+    appColor (newVal) {
+      let avatarEl = document.getElementById('user-avatar');
+			avatarEl.style = 'background-color:' + newVal;
+    }
+  },
   methods: {
     // TODO: Execute asynchronously in promise
     getUserInfo() {
@@ -350,7 +359,7 @@ export default {
           this.user = res.data.userInfo;
 
 					let appColor = this.user.appcolor ? this.user.appcolor : this.$store.state.defaultAppColor;
-					let avatarEl = document.getElementById('test');
+					let avatarEl = document.getElementById('user-avatar');
 					avatarEl.style = 'background-color:' + appColor;
 					avatarEl.classList.add('user-av');
           this.userProfileLoading = false;
