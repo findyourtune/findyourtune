@@ -24,6 +24,6 @@ export default {
 
 <style>
 .post-card {
-    padding-bottom: 10px;
+    padding-top: 10px;
 }
 </style>

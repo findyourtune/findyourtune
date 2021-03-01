@@ -1,12 +1,18 @@
 <template>
   <div class="timeline">
-    <div :class="$options.name">
-      <div :class="`${$options.name}__messageBox`">
-        <tweet-box v-model="tweet" />
-      </div>
-    </div>
-    <div id="postbutton">
-      <b-button pill variant="success" v-on:click="postPost">Post</b-button>
+    <div>
+      <b-container class="newpost-card">
+        <b-card>
+          <b-row class="inputRow">
+            <b-form-input v-model="message" placeholder="What's Happening?"></b-form-input>
+          </b-row>
+          <b-row class="buttonRow">
+            <b-col class="buttonCol">
+              <b-button pill variant="info" v-on:click="postPost">Post</b-button>
+            </b-col>
+          </b-row>
+        </b-card>
+      </b-container>
     </div>
     <b-overlay :show="userPostsLoading" opacity="0.95" rounded="sm">
       <div v-for="(post, index) in posts" :key="index">
@@ -19,23 +25,24 @@
 <script>
 import axios from 'axios';
 import authHeader from '../services/auth/auth-header';
-import TweetBox from '../components/Tweetbox.vue';
 import PostCard from '../components/PostCard.vue';
 export default {
   name: 'Main',
   components: {
-    TweetBox,
     PostCard
   },
   data() {
     return {
-      tweet: '',
+      message: '',
       posts: {},
     };
   },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
+    },
+    messageState() {
+      return this.message.length > 140 ? false : true
     }
   },
   methods: {
@@ -56,7 +63,7 @@ export default {
     },
     postPost() {
       const path = this.$apiUrl + '/api/social/post';
-      const data = { username: this.currentUser.username, text: this.tweet, spotify_data: null}
+      const data = { username: this.currentUser.username, text: this.message, spotify_data: null}
       axios.post(path, data, {
         headers: authHeader()
       })
@@ -77,3 +84,12 @@ export default {
   },
 }
 </script>
+
+<style>
+  .buttonRow {
+    padding-top: 10px;
+  }
+  .buttonCol {
+    text-align: right;
+  }
+</style>
