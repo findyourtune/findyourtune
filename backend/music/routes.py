@@ -16,8 +16,7 @@ from backend.auth.utils import session_cache_path, is_users_spotify_linked
 
 music = Blueprint('music', __name__)
 
-# Test function to show we can hit Spotify API after Authorization code flow
-# Songs are just getting listed out on Profile page for now
+
 @music.route("/api/music/get_music/<username>", methods=['GET'])
 @jwt_required
 def get_music(username):
@@ -37,11 +36,11 @@ def get_music(username):
         access_token = cache_token['access_token']
         spotify_object = spotipy.Spotify(access_token)
 
-        topTracksS = spotify_object.current_user_top_tracks(limit='20', time_range="short_term")
-        topTracks_Short = []
-        for track in topTracksS['items']:
-            topTracks_Short.append(get_track_obj(track))
+        top_tracks_s = spotify_object.current_user_top_tracks(limit='20', time_range="short_term")
+        top_tracks_s_list = []
+        for track in top_tracks_s['items']:
+            top_tracks_s_list.append(get_track_obj(track))
 
-        return jsonify(topTracks_Short), 200
+        return jsonify(top_tracks_s_list), 200
     else:
         return jsonify(), 200

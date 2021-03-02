@@ -1,17 +1,17 @@
 <template>
   <b-container class="user-card">
     <b-row>
-      <b-col cols="2" class="avatar-col">
-        <b-avatar
-          :style="{'background-color': appColor}"
-          variant="info"
-          :text="getAvatarText()"
-          size="2.5rem"
-        ></b-avatar>
-      </b-col>
-      <b-col class="name-col">
-        {{ user.user_firstname }} {{ user.user_lastname }}
-      </b-col>
+        <b-col cols="2">
+          <b-avatar
+            :style="{'background-color': appColor}"
+            variant="info"
+            :text="getAvatarText()"
+            size="2.5rem"
+          ></b-avatar>
+        </b-col>
+        <b-col class="name-col">
+          {{ user.user_firstname }} {{ user.user_lastname }}
+        </b-col>
       <b-col cols="3" class="fxn-col">
         <b-button
           size="sm"
@@ -59,7 +59,8 @@ export default {
   },
   data() {
     return {
-      appColor: ''
+      appColor: '',
+      userProfileUrl: ''
     }
   },
   mounted() {

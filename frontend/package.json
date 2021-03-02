@@ -26,6 +26,7 @@
     "vue": "^2.6.12",
     "vue-color": "^2.8.1",
     "vue-disable-autocomplete": "0.0.4",
+    "vue-moment": "^4.1.0",
     "vue-router": "^3.4.9",
     "vue-styled-components": "^1.6.0",
     "vue-swatches": "^2.1.0",
