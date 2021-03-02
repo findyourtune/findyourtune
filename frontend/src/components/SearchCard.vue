@@ -3,7 +3,7 @@
     <b-card>
       <b-row> {{ searchResult.firstname }} {{ searchResult.lastname }} </b-row>
       <b-row>
-        <router-link :to="profileLink" exact>@{{
+        <router-link class="custom-link" :to="profileLink" exact>@{{
           searchResult.username
         }}</router-link>
       </b-row>

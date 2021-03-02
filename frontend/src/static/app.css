@@ -3,7 +3,7 @@
     --indigo: #6610f2;
     --purple: #6f42c1;
     --pink: #e83e8c;
-    --red: #dc3545;
+    --red: rgb(224, 36, 94);
     --orange: #fd7e14;
     --yellow: #ffc107;
     --green: #28a745;
@@ -28,6 +28,7 @@
     --light0: #f8f8f8;
     --light1: #dbe1e8;
     --light2: #b2becd;
+    --light3: #ebf0f5;
     --sub-light:  #e9ecef;
     --dark0: #303030;
     --dark1: #424242;
@@ -57,9 +58,11 @@
 [data-theme="light"] {
     --link-color: #0a86da;
     --link-white-color: #c1bfbd;
-    --bg: var(--light0);
+    /* --bg: var(--light0); */
+    --bg: var(--light3);
     --bg2: var(--light1);
-    --bg3: var(--sub-light);
+    /* --bg3: var(--sub-light); */
+    --bg3: var(--light0);
     --header-bg: var(--purple0);
     --font-color: var(--dark0);
     --font-color2: rgb(110, 118, 125);
@@ -182,6 +185,65 @@ strong {
 
 .follow-counts > div > span {
     color: var(--color2);
+}
+
+[id='toggle-heart'] {
+    position: absolute;
+    left: -100vw;
+}
+
+[for='toggle-heart'] {
+    color: #b0b7bd;
+    transition: all 0.2s ease-in;
+    rotate: '360deg';
+}
+
+[id='toggle-heart']:checked + label {
+    color: var(--red);
+    transition: all 0.2s ease-in;
+}
+
+[for='toggle-heart'] {
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.custom-link {
+    border: none !important;
+    font-weight: normal !important;
+    color: var(--font-color) !important;
+    display: block;
+    padding: 0 !important;
+    margin: 0 i !important;
+    display: unset !important;
+    align-items: unset !important;
+}
+
+.custom-link:hover {
+    color: var(--app-color) !important;
+}
+
+.user-page-link-button {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.user-page-link-button:hover {
+    opacity: 90%;
+}
+
+.delete-btn {
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    color: var(--red);
+}
+
+.timestamp {
+    padding-left: 5px;
+    display: inline-block;
+    color: var(--font-color2);
 }
 /* END - Custom Styling */
 

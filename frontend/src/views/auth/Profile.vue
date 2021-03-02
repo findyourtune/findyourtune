@@ -8,7 +8,7 @@
               <b-col>
                 <b-avatar
 									size="6rem"
-									id="test"
+									id="user-avatar"
                   variant="info"
                   :text="getAvatarText()"
                 ></b-avatar>
@@ -84,9 +84,10 @@
 
     <themed-divider></themed-divider>
 
-    <b-tabs content-class="mt-3" justified class="profile-tabs">
+    <b-tabs content-class="mt-3" justified>
       <b-tab title="Posts" active>
         <b-overlay :show="userPostsLoading" opacity="0.95" rounded="sm">
+          <p v-if="posts.length == 0">Nothing here...</p>
           <div v-for="(post, index) in posts" :key="index">
             <post-card :post="post" />
           </div>
@@ -97,6 +98,12 @@
         <p v-if="!user.spotify_linked">This user is not connected to Spotify</p>
         <div v-for="(song, index) in songs" :key="index">
           <song-card :song="song" />
+        </div>
+      </b-tab>
+      <b-tab title="Likes">
+        <p v-if="likes.length == 0">Nothing here...</p>
+        <div v-for="(post, index) in likes" :key="index">
+          <post-card :post="post" />
         </div>
       </b-tab>
     </b-tabs>
@@ -117,7 +124,6 @@
               label-for="input-1"
             >
               <b-form-input
-                autocomplete="off"
                 id="input-1"
                 name="input-1"
                 v-model="form.firstname"
@@ -140,7 +146,6 @@
               label-for="input-2"
             >
               <b-form-input
-                autocomplete="off"
                 id="input-2"
                 name="input-2"
                 v-model="form.lastname"
@@ -160,7 +165,6 @@
 
         <b-form-group id="input-group-3" label="Username" label-for="input-3">
           <b-form-input
-            autocomplete="off"
             id="input-3"
             name="input-3"
             v-model="form.username"
@@ -178,7 +182,6 @@
 
         <b-form-group id="input-group-4" label="Email" label-for="input-4">
           <b-form-input
-            autocomplete="off"
             id="input-4"
             name="input-4"
             v-model="form.email"
@@ -292,6 +295,9 @@ export default {
     currentTheme() {
       return this.$store.state.theme;
     },
+    appColor() {
+      return this.$store.state.appColor;
+    }
   },
   mounted() {
     if (!this.currentUser) {
@@ -317,6 +323,7 @@ export default {
 			userFollowLoading: false,
       songs: [],
       posts: [],
+      likes: [],
 			followRels : {
 				follower_rels: [],
 				following_rels: []
@@ -328,12 +335,19 @@ export default {
     this.getUserInfo();
     this.getUserPosts();
     this.getMusic();
+    this.getUserLikes();
     this.form.firstname = this.$store.state.auth.user.firstname;
     this.form.lastname = this.$store.state.auth.user.lastname;
     this.form.email = this.$store.state.auth.user.email;
     this.form.username = this.$store.state.auth.user.username;
     this.form.spotify_account = this.$store.state.auth.user.spotify_account;
     this.form.bio = this.$store.state.auth.user.bio;
+  },
+  watch: {
+    appColor (newVal) {
+      let avatarEl = document.getElementById('user-avatar');
+			avatarEl.style = 'background-color:' + newVal;
+    }
   },
   methods: {
     // TODO: Execute asynchronously in promise
@@ -350,7 +364,7 @@ export default {
           this.user = res.data.userInfo;
 
 					let appColor = this.user.appcolor ? this.user.appcolor : this.$store.state.defaultAppColor;
-					let avatarEl = document.getElementById('test');
+					let avatarEl = document.getElementById('user-avatar');
 					avatarEl.style = 'background-color:' + appColor;
 					avatarEl.classList.add('user-av');
           this.userProfileLoading = false;
@@ -386,6 +400,21 @@ export default {
         })
         .then((res) => {
           this.songs = res.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    getUserLikes() {
+      const path =
+        this.$apiUrl + "/api/social/get_liked_posts/" +
+        this.$router.currentRoute.params.username;
+      axios
+        .get(path, {
+          headers: authHeader(),
+        })
+        .then((res) => {
+          this.likes = res.data;
         })
         .catch((error) => {
           console.error(error);
@@ -459,6 +488,7 @@ export default {
         if (this.form.email && this.form.username) {
           this.$store.dispatch("auth/updateProfile", this.form).then(
             () => {
+              this.getUserInfo();
               // Hide the modal manually
               this.$nextTick(() => {
                 this.$bvModal.hide("edit-profile");
@@ -544,10 +574,6 @@ export default {
 <style scoped>
 .edit-profile {
   text-align: right;
-}
-
-.avatar-row {
-  align-items: center;
 }
 
 .display-name {

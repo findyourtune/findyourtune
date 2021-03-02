@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form @submit="onSubmit" v-if="show">
+    <b-form @submit.stop.prevent="onSubmit" v-if="show">
     <b-form-group
       id="input-group-1"
       label="First Name"
@@ -176,9 +176,8 @@ export default {
       this.$validator.validate().then(isValid => {
         if (isValid) {
           this.$store.dispatch('auth/register', this.form).then(
-            data => {
-              this.message = data.username;
-              this.successful = true;
+            () => {
+              this.$router.push('/login');
             },
             error => {
               this.message =

@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 )
 from backend import db, bcrypt
 from backend.models import Users, UsersSchema, Follow_Relationship
-from backend.auth.utils import session_cache_path, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit
+from backend.auth.utils import session_cache_path, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit, get_user_info_from_token
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
 import os
@@ -95,13 +95,9 @@ def protected():
 @jwt_required
 def getUserInfo(username):
     users_schema = UsersSchema()
+    current_user = get_user_info_from_token(request)
 
-    token = request.headers['Authorization']
-    token2 = token.split(' ')
-    headerToken = token2[1]
-
-    decoded = jwt.decode(headerToken, verify=False)
-    current_username = decoded['identity']['username']
+    current_username = current_user['username']
 
     user = Users.query.filter_by(username=username).first()
 
@@ -168,11 +164,10 @@ def reset_token():
 def update_profile():
     data = request.json
     validate_profile_edit(data)
-    token = request.headers['Authorization']
-    token2 = token.split(' ')
-    header_token = token2[1]
-    decoded = jwt.decode(header_token, verify=False)
-    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    current_user = get_user_info_from_token(request)
+
+    current_username = current_user['username']
+    user = Users.query.filter_by(username=current_username).first()
     user.firstname = data['firstname']
     user.lastname = data['lastname']
     user.username = data['username']
@@ -195,11 +190,10 @@ def update_profile():
 @jwt_required
 def update_appcolor():
     data = request.json
-    token = request.headers['Authorization']
-    token2 = token.split(' ')
-    header_token = token2[1]
-    decoded = jwt.decode(header_token, verify=False)
-    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    current_user = get_user_info_from_token(request)
+
+    current_username = current_user['username']
+    user = Users.query.filter_by(username=current_username).first()
     user.appcolor = data['appcolor']
     db.session.commit()
     
@@ -213,11 +207,10 @@ def update_appcolor():
 @jwt_required
 def link_spotify():
     data = request.json
-    token = request.headers['Authorization']
-    token2 = token.split(' ')
-    header_token = token2[1]
-    decoded = jwt.decode(header_token, verify=False)
-    user = Users.query.filter_by(username=decoded['identity']['username']).first()
+    current_user = get_user_info_from_token(request)
+
+    current_username = current_user['username']
+    user = Users.query.filter_by(username=current_username).first()
     user.spotify_account = data['spotify_account']
     db.session.commit()
     
@@ -264,4 +257,6 @@ def link_spotify_callback():
     to_file.close()
     from_file.close()
     os.remove(session_cache_path(cache_file))
-    return redirect(current_app.config['FRONTEND_URL'] + '#/profile')
+
+    user = Users.query.filter_by(spotify_account=sp_user['id']).first()
+    return redirect(current_app.config['FRONTEND_URL'] + '#/u/' + user.username)

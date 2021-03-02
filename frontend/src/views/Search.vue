@@ -9,9 +9,18 @@
       >Search</b-button
     >
     <b-overlay :show="searchLoading" opacity="0.95" rounded="sm">
-      <div v-for="(searchResult, index) in searchResults" :key="index">
-        <search-card :searchResult="searchResult" />
-      </div>
+      <b-tabs v-if="searchOccurred" content-class="mt-3" justified>
+        <b-tab title="Users" active>
+          <div v-for="(searchResult, index) in searchResults.users" :key="index">
+            <search-card :searchResult="searchResult" />
+          </div>
+        </b-tab>
+        <b-tab title="Music">
+          <div v-for="(song, index2) in searchResults.music" :key="index2">
+            <song-card :song="song" />
+          </div>
+        </b-tab>
+      </b-tabs>
     </b-overlay>
   </div>
 </template>
@@ -20,16 +29,23 @@
 import axios from 'axios';
 import authHeader from '../services/auth/auth-header';
 import SearchCard from '../components/SearchCard.vue'
+import SongCard from '../components/SongCard.vue';
 export default {
   name: "Search",
   components:{
-    SearchCard
+    SearchCard,
+    SongCard
   },
   data() {
     return {
       searchString: '',
       searchStringPrev: '',
-      searchResults: {}
+      searchResults: {
+        users: [],
+        music: []
+      },
+      searchLoading: false,
+      searchOccurred: false
     };
   },
   computed: {
@@ -47,6 +63,7 @@ export default {
       })
       .then((res)=>{
         this.searchResults = res.data;
+        this.searchOccurred = true;
         this.searchLoading = false;
       })
       .catch((error)=>{

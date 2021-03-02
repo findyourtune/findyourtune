@@ -93,8 +93,8 @@ export default {
       this.loading = true;
       this.$validator.validateAll().then(isValid => {
         if (!isValid) {
-        this.loading = false;
-        return;
+          this.loading = false;
+          return;
         }
 
         if (this.form.email && this.form.password) {
