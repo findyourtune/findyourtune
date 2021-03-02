@@ -10,7 +10,23 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from os import path
 import smtplib
+import jwt
 import os
+
+
+def get_user_info_from_token(request):
+    try:
+        token = request.headers['Authorization']
+        token2 = token.split(' ')
+        
+        if token2 and len(token2) > 1:
+            headerToken = token2[1]
+            decoded = jwt.decode(headerToken, verify=False)
+            return decoded['identity']
+        else:
+            return None
+    except:
+        return None
 
 
 def session_cache_path(cache_file):

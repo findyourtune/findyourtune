@@ -11,18 +11,26 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from backend import db
 from backend.music.utils import get_track_obj
 from backend.models import Users
-from backend.auth.utils import session_cache_path, is_users_spotify_linked
+from backend.auth.utils import session_cache_path, is_users_spotify_linked, get_user_info_from_token
 
 search = Blueprint('search', __name__)
 
 @search.route("/api/search/search_users/<search_string>", methods=['GET'])
 def search_users(search_string):
+    try :
+        current_user = get_user_info_from_token(request)
+
+        current_username = current_user['username']
+        current_user = Users.query.filter_by(username=current_username).first()
+    except:
+        pass
+
     # ilike is case insensitive
     users = Users.query.filter(Users.username.ilike('%' + search_string + '%') | 
                                Users.firstname.ilike('%' + search_string + '%') | 
                                Users.lastname.ilike('%' + search_string + '%') 
                               )
-    results = []
+    user_results = []
     for user in users:
         user_dict = {
             'username': user.username,
@@ -30,5 +38,33 @@ def search_users(search_string):
             'lastname': user.lastname,
             'spotify_account': user.spotify_account
         }
-        results.append(user_dict)
+        user_results.append(user_dict)
+
+    searched_tracks_list = []
+    if current_user:
+        spotify_linked = is_users_spotify_linked(current_user.username)
+        if spotify_linked:
+            user = Users.query.filter_by(username=current_user.username).first()
+            cache_file = user.spotify_account
+            auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                        client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                        redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                        show_dialog=False,
+                                                        cache_path=session_cache_path(cache_file),
+                                                        scope=current_app.config['SCOPE'] )
+
+
+            cache_token = auth_manager.get_access_token()
+            access_token = cache_token['access_token']
+            spotify_object = spotipy.Spotify(access_token)
+
+            # searched_tracks = spotify_object.current_user_top_tracks(q=search_string, type='track,album,playlist', limit='20')
+            searched_tracks = spotify_object.search(q=search_string, type='track', limit='25')
+            for track in searched_tracks['tracks']['items']:
+                searched_tracks_list.append(get_track_obj(track))
+
+    results = {
+        'users': user_results,
+        'music': searched_tracks_list
+    }
     return( jsonify(results) )

@@ -101,6 +101,7 @@ class Likes(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.post_id'), nullable=False)
     comment_id = db.Column(db.Integer, db.ForeignKey('comments.comment_id'), nullable=True)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return f"Like(like_id: '{self.like_id}', user_id: '{self.user_id}')"
@@ -114,6 +115,7 @@ class LikesSchema(ma.SQLAlchemySchema):
     user_id = ma.auto_field
     post_id = ma.auto_field
     comment_id = ma.auto_field
+    timestamp = ma.auto_field()
 
 
 class Direct_Messages(db.Model):

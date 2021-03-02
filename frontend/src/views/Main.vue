@@ -51,17 +51,20 @@ export default {
       })
       .catch((error)=>{
         console.error(error);
-        this.post = 'Could not load posts'
       });
     },
     postPost() {
       const path = this.$apiUrl + '/api/social/post';
-      const data = { username: this.currentUser.username, text: this.tweet, spotify_data: null}
+      const data = { 
+        user_id: this.currentUser.user_id, 
+        text: this.tweet, 
+        spotify_data: null
+      }
       axios.post(path, data, {
         headers: authHeader()
       })
       .then(()=> {
-        this.getPosts();
+        this.$router.go()
       })
       .catch(error => {
         console.error("Could not POST user post", error);
