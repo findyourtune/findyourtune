@@ -11,7 +11,7 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from backend import db
 from backend.music.utils import get_track_obj
 from backend.models import Users
-from backend.auth.utils import session_cache_path, is_users_spotify_linked
+from backend.auth.utils import session_cache_path, is_users_spotify_linked, get_user_info_from_token
 
 
 music = Blueprint('music', __name__)
@@ -43,4 +43,40 @@ def get_music(username):
 
         return jsonify(top_tracks_s_list), 200
     else:
-        return jsonify(), 200
+        return jsonify([]), 200
+
+
+@music.route("/api/music/get_short_term_music", methods=['GET'])
+@jwt_required
+def get_short_term_music():
+    current_user = get_user_info_from_token(request)
+
+    if current_user is not None:
+        current_username = current_user['username']
+    else:
+        current_username = None
+
+    spotify_linked = is_users_spotify_linked(current_username)
+    if spotify_linked:
+        user = Users.query.filter_by(username=current_username).first()
+        cache_file = user.spotify_account
+        auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                    client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                    redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                    show_dialog=False,
+                                                    cache_path=session_cache_path(cache_file),
+                                                    scope=current_app.config['SCOPE'] )
+
+
+        cache_token = auth_manager.get_access_token()
+        access_token = cache_token['access_token']
+        spotify_object = spotipy.Spotify(access_token)
+
+        top_tracks_s = spotify_object.current_user_top_tracks(limit='30', time_range="short_term")
+        top_tracks_s_list = []
+        for track in top_tracks_s['items']:
+            top_tracks_s_list.append(get_track_obj(track))
+
+        return jsonify(top_tracks_s_list), 200
+    else:
+        return jsonify([]), 200

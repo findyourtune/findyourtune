@@ -32,6 +32,7 @@ Vue.use(VueMoment);
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 Vue.prototype.$apiUrl = packagejson.envConfig.apiUrl;
+Vue.prototype.$spotifyUrl = packagejson.envConfig.spotifyUrl;
 
 new Vue({
   store,

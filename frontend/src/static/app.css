@@ -165,11 +165,11 @@ strong {
     color: var(--color2);
 }
 
-.view-password-btn {
+.default-button {
     cursor: pointer;
 }
 
-.view-password-btn:hover {
+.default-button:hover {
     opacity: 70%;
 }
 
@@ -185,27 +185,6 @@ strong {
 
 .follow-counts > div > span {
     color: var(--color2);
-}
-
-[id='toggle-heart'] {
-    position: absolute;
-    left: -100vw;
-}
-
-[for='toggle-heart'] {
-    color: #b0b7bd;
-    transition: all 0.2s ease-in;
-    rotate: '360deg';
-}
-
-[id='toggle-heart']:checked + label {
-    color: var(--red);
-    transition: all 0.2s ease-in;
-}
-
-[for='toggle-heart'] {
-    font-size: 1.2em;
-    cursor: pointer;
 }
 
 .custom-link {
@@ -240,10 +219,82 @@ strong {
     color: var(--red);
 }
 
+.like-btn-fill {
+    cursor: pointer;
+}
+
+.like-btn-fill:hover {
+    color: var(--red);
+}
+
+.like-btn {
+    cursor: pointer;
+    color: var(--red);
+}
+
 .timestamp {
     padding-left: 5px;
     display: inline-block;
     color: var(--font-color2);
+}
+
+.overflow-tabs {
+	overflow-x: hidden !important;
+}
+
+.embedRow { 
+    margin: auto;
+}
+
+.content-embed {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sub-content-embed {
+    display: flex;
+    align-items: center;
+    width: 300px;
+}
+
+.image-embed {
+    padding-top: 15px;
+    min-width: 150px;
+}
+
+.image-embed > img {
+    width: 150px;
+    height: 150px;
+    image-rendering: -moz-crisp-edges; /* Firefox */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
+}
+
+.info-embed {
+    padding-left: 15px;
+}
+
+.custom-btn-filled {
+    background-color: var(--app-color);
+}
+
+.custom-btn-filled:hover {
+    background-color: var(--app-color);
+    opacity: 90%;
+}
+
+.custom-btn-filled:not(:disabled):not(.disabled):active {
+    color: var(--light);
+    background-color: var(--app-color);
+    border-color: var(--light);
+}
+
+.custom-btn-filled:not(:disabled):not(.disabled):focus {
+    background-color: var(--app-color);
+    border-color: var(--light);
 }
 /* END - Custom Styling */
 

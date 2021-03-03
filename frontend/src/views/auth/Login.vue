@@ -35,8 +35,8 @@
           :type="passwordFieldType"
           ></b-form-input>
           <b-input-group-append is-text>
-            <b-icon v-if="passwordFieldType === 'password'" class="view-password-btn" @click="switchVisibility()" icon="eye-slash"></b-icon>
-            <b-icon v-if="passwordFieldType === 'text'" class="view-password-btn" @click="switchVisibility()" icon="eye"></b-icon>
+            <b-icon v-if="passwordFieldType === 'password'" class="default-button" @click="switchVisibility()" icon="eye-slash"></b-icon>
+            <b-icon v-if="passwordFieldType === 'text'" class="default-button" @click="switchVisibility()" icon="eye"></b-icon>
           </b-input-group-append>
           <b-form-invalid-feedback id="input-2-live-feedback">{{ veeErrors.first('input-2') }}</b-form-invalid-feedback>
         </b-input-group>
