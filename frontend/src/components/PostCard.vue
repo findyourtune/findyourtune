@@ -25,16 +25,31 @@
                     <b-icon class="delete-btn" @click="deletePost()" icon="trash"></b-icon>
                 </span>
                 <span v-if="currentUser && post.user_id != currentUser.user_id">
-                    <input id="toggle-heart" v-model="post.current_user_likes" type="checkbox" @click="toggleLikePost()"/>
-                    <label for="toggle-heart"><b-icon icon="heart-fill"></b-icon></label>
+                    <b-icon v-if="!post.current_user_likes" class="like-btn-fill" @click="toggleLikePost()" icon="heart"></b-icon>
+                    <b-icon v-if="post.current_user_likes" class="like-btn" @click="toggleLikePost()" icon="heart-fill"></b-icon>
                 </span>
                 <span>
-                    <b-icon class="view-password-btn" @click="postComment()" icon="arrow-return-left"></b-icon>
+                    <b-icon class="default-button" @click="postComment()" icon="arrow-return-left"></b-icon>
                 </span>
             </b-col>
         </b-row>
         <b-row class="post-area">
             {{post.text}}
+        </b-row>
+        <b-row v-if="post.spotify_data != null" class="embedRow">
+            <b-col cols="2"></b-col>
+            <b-col class="content-embed">
+              <div class="sub-content-embed default-button" @click="openSpotifyLink(embeddedItem.url)">
+                <div class="image-embed">
+                  <img :src="embeddedItem.imageUrl"> 
+                </div>
+                <div class="info-embed">
+                  <div>{{embeddedItem.name}}</div>
+                  <p class="artist-name">{{embeddedItem.artist}}</p>
+                </div>
+              </div>
+            </b-col>
+            <b-col cols="2"></b-col>
         </b-row>
       </b-card>
   </b-container>
@@ -50,11 +65,19 @@ export default {
             type: Object
         }  
     },
-    data() {
+    data: function () {
         return {
             appColor: '',
             timestampDisplay: '',
             timeStampTooltip: '',
+            embeddedItem: {
+                id: '',
+                type: '',
+                name: '',
+                artist: '',
+                imageUrl: '',
+                url: ''
+            },
         }
     },
     created() {
@@ -63,6 +86,16 @@ export default {
     mounted() {
         this.appColor = this.post.appColor ? this.post.appColor : this.$store.state.defaultAppColor;
         this.timeStampTooltip = this.$moment(this.post.timestamp).format("h:mm A - MMM D, YYYY");
+
+        if (this.post.spotify_data != null) {
+            var dataArray = this.post.spotify_data.split(',');
+            this.embeddedItem.id = dataArray[0];
+            this.embeddedItem.type = dataArray[1];
+            this.embeddedItem.name = dataArray[2];
+            this.embeddedItem.artist = dataArray[3];
+            this.embeddedItem.imageUrl = dataArray[4];
+            this.embeddedItem.url = this.$spotifyUrl + dataArray[1] + '/' + dataArray[0];
+        }
     },
     computed: {
         currentUser() {
@@ -70,7 +103,7 @@ export default {
         },
         profileLink() {
             return "/u/" + this.post.username;
-        },
+        }
     },
     methods: {
         toggleLikePost() {
@@ -96,35 +129,37 @@ export default {
             }
         },
         deletePost() {
-            this.$bvModal.msgBoxConfirm('Are you sure you would like to delete this post?', {
-                okTitle: 'Delete',
-                size: 'sm',
-                buttonSize: 'sm',
-                okVariant: 'danger',
-                centered: true
-            })
-            .then(value => {
-                if (value == true) {
-                    const path = this.$apiUrl + "/api/social/delete_post";
-                    const data = {
-                        post_id: this.post.post_id,
-                        user_id: this.currentUser.user_id
-                    };
-                    axios
-                        .post(path, data, {
-                            headers: authHeader(),
-                        })
-                        .then(() => {
-                            this.$router.go();
-                        })
-                        .catch((error) => {
-                        console.error("Could not delete post", error);
-                    });
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            })
+            if (!this.currentUser) {
+                this.$router.push("/login");
+            } else {
+                this.$bvModal.msgBoxConfirm('Are you sure you would like to delete this post?', {
+                    okTitle: 'Delete',
+                    okVariant: 'danger',
+                    centered: true
+                })
+                .then(value => {
+                    if (value == true) {
+                        const path = this.$apiUrl + "/api/social/delete_post";
+                        const data = {
+                            post_id: this.post.post_id,
+                            user_id: this.currentUser.user_id
+                        };
+                        axios
+                            .post(path, data, {
+                                headers: authHeader(),
+                            })
+                            .then(() => {
+                                this.$router.go();
+                            })
+                            .catch((error) => {
+                            console.error("Could not delete post", error);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+            }
         },
         getPostTimeStamp() {
             var postTimeStamp = this.$moment(this.post.timestamp);
@@ -146,6 +181,13 @@ export default {
         goToUser() {
             this.$router.push(this.profileLink);
         },
+        getItemImage() {
+            try {
+                return this.song.images[2].url;
+            } catch (err) {
+                return this.song.images[0].url;
+            }
+        },
         getAvatarText() {
             try {
                 let firstInitial = this.post.firstname.charAt(0);
@@ -155,6 +197,9 @@ export default {
                 return "";
             }
         },
+        openSpotifyLink(url) {
+            window.open(url);
+        }
     }
 };
 </script>

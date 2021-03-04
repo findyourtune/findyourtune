@@ -81,6 +81,7 @@ def delete_post():
     if current_user_id != data['user_id']:
         return jsonify({"msg": "Can only delete owned posts."}), 500
 
+    Likes.query.filter_by(post_id=data['post_id']).delete()
     Posts.query.filter_by(post_id=data['post_id']).delete()
     db.session.commit()
     return jsonify({"msg": "Post deleted."}), 201

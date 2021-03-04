@@ -62,6 +62,7 @@
     "not dead"
   ],
   "envConfig": {
-    "apiUrl": "http://localhost"
+    "apiUrl": "http://localhost",
+    "spotifyUrl": "https://open.spotify.com/"
   }
 }

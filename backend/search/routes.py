@@ -9,7 +9,7 @@ import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from backend import db
-from backend.music.utils import get_track_obj
+from backend.music.utils import get_track_obj, get_playlist_obj, get_album_obj
 from backend.models import Users
 from backend.auth.utils import session_cache_path, is_users_spotify_linked, get_user_info_from_token
 
@@ -68,3 +68,54 @@ def search_users(search_string):
         'music': searched_tracks_list
     }
     return( jsonify(results) )
+
+
+@search.route("/api/search/get_spotify_embed/<search_string>", methods=['GET'])
+@jwt_required
+def get_spotify_embed(search_string):
+    current_user = get_user_info_from_token(request)
+
+    if current_user is not None:
+        current_username = current_user['username']
+    else:
+        current_username = None
+
+    spotify_linked = is_users_spotify_linked(current_username)
+    searched_tracks_list = []
+    searched_playlists_list = []
+    searched_albums_list = []
+    if spotify_linked:
+        user = Users.query.filter_by(username=current_username).first()
+        cache_file = user.spotify_account
+        auth_manager = spotipy.oauth2.SpotifyOAuth( client_id=current_app.config['SPOTIFY_CLIENT_ID'], 
+                                                    client_secret=current_app.config['SPOTIFY_SECRET_ID'],
+                                                    redirect_uri=current_app.config['SPOTIFY_REDIRECT_URI'],
+                                                    show_dialog=False,
+                                                    cache_path=session_cache_path(cache_file),
+                                                    scope=current_app.config['SCOPE'] )
+
+
+        cache_token = auth_manager.get_access_token()
+        access_token = cache_token['access_token']
+        spotify_object = spotipy.Spotify(access_token)
+
+        searched_tracks = spotify_object.search(q=search_string, type='track', limit='20')
+        for track in searched_tracks['tracks']['items']:
+            searched_tracks_list.append(get_track_obj(track))
+
+        searched_albums = spotify_object.search(q=search_string, type='album', limit='20')
+        for album in searched_albums['albums']['items']:
+            searched_albums_list.append(get_album_obj(album))
+
+        searched_playlists = spotify_object.search(q=search_string, type='playlist', limit='20')
+        for playlist in searched_playlists['playlists']['items']:
+            searched_playlists_list.append(get_playlist_obj(playlist))
+        
+        rtn = {
+            'songs': searched_tracks_list,
+            'albums': searched_albums_list,
+            'playlists': searched_playlists_list
+        }
+        return jsonify(rtn), 200
+    else:
+        return jsonify([]), 200
