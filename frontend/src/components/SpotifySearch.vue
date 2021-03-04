@@ -56,10 +56,8 @@
 
 <script>
 import axios from 'axios';
-import { mapMutations } from 'vuex';
 import authHeader from '../services/auth/auth-header';
 import SongCard from "./SongCard.vue";
-import store from '../store';
 export default {
   name: 'SpotifySearch',
   components: {
@@ -82,17 +80,7 @@ export default {
       searchOccurred: false
     };
   },
-  mounted () {
-    this.$root.$on('bv::modal::hide', () => {
-        store.commit('pauseAudio') 
-    })
-  },
   methods: {
-    ...mapMutations([
-    'setAudio',
-    'playAudio',
-    'pauseAudio'
-    ]),
     getSearch() {
         this.spotifyEmbedLoading = true;
         const path = this.$apiUrl + '/api/search/get_spotify_embed/' + this.searchString;

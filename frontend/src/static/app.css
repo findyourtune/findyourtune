@@ -318,7 +318,6 @@ strong {
 
 .close:hover {
     color: var(--app-color);
-    opacity: 1;
 }
 
 .form-control {
