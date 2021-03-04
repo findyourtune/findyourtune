@@ -57,7 +57,7 @@ export default {
       Type: Boolean
     }
   },
-  data() {
+  data: function () {
     return {
       appColor: '',
       userProfileUrl: ''

@@ -225,7 +225,7 @@
 			@ok="handleOkViewFollowers"
     >
       <b-overlay :show="userFollowLoading" opacity="0.95" rounded="sm">
-				<b-tabs v-model="activeTab" class="following-tabs" content-class="mt-3" justified>
+				<b-tabs v-model="activeTab" class="overflow-tabs" content-class="mt-3" justified>
 					<b-tab title="Following">
 						<p v-if="user.following_count == 0">No users followed</p>
 						<div v-for="(followRel, index) in followRels.following_rels" :key="index">
@@ -590,10 +590,6 @@ export default {
 
 .bio {
   padding-top: 5px;
-}
-
-.following-tabs {
-	overflow-x: hidden !important;
 }
 
 .user-av {
