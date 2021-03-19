@@ -65,7 +65,7 @@
     "not dead"
   ],
   "envConfig": {
-    "apiUrl": "http://localhost",
+    "apiUrl": "https://findyourtune.herokuapp.com",
     "spotifyUrl": "https://open.spotify.com/"
   }
 }

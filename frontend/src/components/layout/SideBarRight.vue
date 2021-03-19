@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Suggested from "./Suggested.vue";
+import Suggested from "../Suggested.vue";
 export default {
   name: "SideBarRight",
   components: { Suggested },
@@ -38,7 +38,7 @@ export default {
 .sideBarRightContent {
   padding-top: 10px;
   display: flex;
-  width: 250px;
+  width: 350px;
   padding-left: 10px;
   padding-right: 10px;
 }
