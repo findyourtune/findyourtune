@@ -51,11 +51,5 @@ def get_suggested_people(username):
         'timestamp': relationship.Follow_Relationship.timestamp,
         'user_followed': True
         } for relationship in following_user_following_relationships]
-
-        if len(following_user_all_following_relationships) > 0:
-            current_suggested_len = len(suggested_following)
-            while len(suggested_following) != current_suggested_len + 1:
-                for j in following_user_all_following_relationships:
-                    suggested_following.append(j)
-    print({'people': suggested_following})
+        suggested_following = following_user_all_following_relationships + suggested_following
     return jsonify({'people': suggested_following})

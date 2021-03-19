@@ -1,18 +1,25 @@
 <template>
   <div class="sideBarRight">
     <div class="sideBarRightContent">
-      <h1>Suggested Content</h1>
+      <div v-if="loggedIn">
+        <suggested />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import Suggested from "./Suggested.vue";
 export default {
-    name: 'SideBarRight'
-}
+  name: "SideBarRight",
+  components: { Suggested },
+  computed: {
+    loggedIn() {
+      return this.$store.state.auth.status.loggedIn;
+    },
+  },
+};
 </script>
-
-}
 
 
 <style scoped>
@@ -38,7 +45,7 @@ export default {
 
 @media print, screen and (max-width: 1000px) {
   .sideBarRight {
-      display: none;
+    display: none;
   }
 }
 </style>

@@ -44,13 +44,15 @@ def create_app(config_class=Config):
     from backend.social.routes import social
     from backend.auth.routes import auth
     from backend.music.routes import music
-    from backend.errors.handlers import errors    
+    from backend.errors.handlers import errors
+    from backend.suggested.routes import suggested  
     
     app.register_blueprint(search)
     app.register_blueprint(social)   
     app.register_blueprint(auth)
     app.register_blueprint(music)
     app.register_blueprint(errors) 
+    app.register_blueprint(suggested)
 
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
