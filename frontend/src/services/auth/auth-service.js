@@ -88,6 +88,10 @@ class AuthService {
       username: form.username
     }, { headers: authHeader() } )
     .then(response => {
+      if (response.data.access_token) {
+        localStorage.user = JSON.stringify(response.data.token);
+      }
+      
       if(response.data.auth_url) {
         window.location.href = response.data.auth_url;
       }
