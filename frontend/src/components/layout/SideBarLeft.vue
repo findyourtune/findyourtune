@@ -5,9 +5,12 @@
         <div>
           <router-link to="/" exact>Home</router-link>
         </div>
-        <div v-if="loggedIn">
-          <router-link to="/courses" exact>Messages</router-link>
+        <div>
+          <router-link to="/about" exact>About</router-link>
         </div>
+        <!-- <div v-if="loggedIn">
+          <router-link to="/messages" exact>Messages</router-link>
+        </div> -->
         <div v-if="loggedIn">
           <router-link to="/search" exact>Search</router-link>
         </div>

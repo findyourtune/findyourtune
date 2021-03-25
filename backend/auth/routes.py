@@ -98,6 +98,7 @@ def getUserInfo(username):
     current_user = get_user_info_from_token(request)
 
     current_username = current_user['username']
+    current_user_id = current_user['user_id']
 
     user = Users.query.filter_by(username=username).first()
 
@@ -106,7 +107,7 @@ def getUserInfo(username):
     
     # Does requesting user follow user
     if current_username != username:
-        follows = db.session.query(Follow_Relationship).join(Users, (Users.user_id == Follow_Relationship.followed_id and current_username == Follow_Relationship.follower_id))\
+        follows = db.session.query(Follow_Relationship).join(Users, (Users.user_id == Follow_Relationship.followed_id and current_user_id == Follow_Relationship.follower_id))\
                                                         .filter(Users.username == username).first()                                   
         if follows is not None:
             user_followed = True
@@ -227,9 +228,14 @@ def link_spotify():
     if not auth_manager.get_cached_token():
         auth_url = auth_manager.get_authorize_url()
 
+    expires = datetime.timedelta(days=7)
     users_schema = UsersSchema()
     spotify_linked = is_users_spotify_linked(user.username)
-    ret = users_schema.dump(user)
+    token = users_schema.dump(user)
+    token['access_token'] = create_access_token(identity=users_schema.dump(user), expires_delta=expires)
+    token['refresh_token'] = create_refresh_token(identity=users_schema.dump(user), expires_delta=expires)
+    ret = {}
+    ret['token'] = token
     ret['spotify_linked'] = spotify_linked
     ret['auth_url'] = auth_url
     
@@ -259,4 +265,4 @@ def link_spotify_callback():
     os.remove(session_cache_path(cache_file))
 
     user = Users.query.filter_by(spotify_account=sp_user['id']).first()
-    return redirect(current_app.config['FRONTEND_URL'] + '#/u/' + user.username)
+    return redirect(current_app.config['FRONTEND_URL'] + 'findyourtune/#/u/' + user.username)

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router'
 
 import Main from '../views/Main.vue'
-import Courses from '../views/Courses.vue'
+import About from '../views/About.vue'
 import Search from '../views/Search.vue'
 import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
@@ -15,7 +15,7 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   routes: [
     { path: '/', component: Main, props: { msg: 'Home' }, name: 'home' },
-    { path: '/courses', component: Courses, name: 'courses' },
+    { path: '/about', component: About, name: 'about' },
     { path: '/search', component: Search, name: 'search' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/register', component: Register, name: 'register' },
