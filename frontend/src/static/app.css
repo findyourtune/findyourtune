@@ -196,6 +196,7 @@ strong {
     margin: 0 i !important;
     display: unset !important;
     align-items: unset !important;
+    cursor: pointer;
 }
 
 .custom-link:hover {

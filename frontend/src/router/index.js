@@ -27,7 +27,7 @@ const router = new VueRouter({
 
 // publicPages are paths in the router that should not require user authentication
 router.beforeEach((to, from, next) => {
-  const publicPages = ['login', 'register', 'home', 'resetPassword', 'resetPasswordToken'];
+  const publicPages = ['login', 'register', 'home', 'resetPassword', 'resetPasswordToken', 'about'];
   const authRequired = !publicPages.includes(to.name);
   const loggedIn = localStorage.getItem('user');
 
