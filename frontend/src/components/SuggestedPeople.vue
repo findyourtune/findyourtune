@@ -5,7 +5,7 @@
         <b-col>
           <div @click="goToUser()" class="user-page-link-button">
             <b-avatar
-              :style="{ 'background-color': appColor }"
+              :style="{ 'background-color': person.user_appcolor }"
               variant="info"
               :text="getAvatarText()"
               size="3.5rem"
