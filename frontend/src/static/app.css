@@ -170,7 +170,7 @@ strong {
 }
 
 .default-button:hover {
-    opacity: 70%;
+    /* opacity: 70%; */
 }
 
 .follow-counts {
@@ -209,7 +209,7 @@ strong {
 }
 
 .user-page-link-button:hover {
-    opacity: 90%;
+    /* opacity: 90%; */
 }
 
 .delete-btn {
@@ -284,7 +284,7 @@ strong {
 
 .custom-btn-filled:hover {
     background-color: var(--app-color);
-    opacity: 90%;
+    /* opacity: 90%; */
 }
 
 .custom-btn-filled:not(:disabled):not(.disabled):active {
@@ -401,7 +401,7 @@ strong {
 }
 
 .switch input { 
-    opacity: 0;
+    /* opacity: 0; */
     width: 0;
     height: 0;
 }

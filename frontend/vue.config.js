@@ -1,5 +1,4 @@
 module.exports = {
-  publicPath: '/findyourtune/',
   runtimeCompiler: true,
   chainWebpack: config => {
     config.module
@@ -19,7 +18,6 @@ module.exports = {
           'b-carousel-slide': 'img-src',
           'b-embed': 'src'
         }
-
         return options
       })
   }
