@@ -3,15 +3,15 @@ import secrets
 from PIL import Image
 from flask import url_for, current_app
 from flask_mail import Message
-from backend import mail
-from backend.models import Users
+from backend import mail, db
+from backend.models import Users, Spotify_Account_Token
 from backend.errors.handlers import InvalidAPIUsage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from os import path
 import smtplib
 import jwt
-import os
+import json
 
 
 def get_user_info_from_token(request):
@@ -30,7 +30,17 @@ def get_user_info_from_token(request):
 
 
 def session_cache_path(cache_file):
-    return './.spotify_caches/' + cache_file
+    path = './.spotify_caches/' + cache_file
+    if os.path.isfile(path):
+        return path
+    token = Spotify_Account_Token.query.filter_by(user_account=cache_file).first()
+    if token != None:
+        json_str = '{"access_token":"' + token.access_token + '","token_type":"' + token.token_type + '","expires_in":' + token.expires_in + ',"scope":"' + token.scope + '","expires_at":' + token.expires_at + ',"refresh_token":"' + token.refresh_token + '"}'
+        print(json_str)
+        f = open(path, 'w')
+        f.write(json_str)
+        f.close()
+    return path
 
 def is_users_spotify_linked(username):
     user = Users.query.filter_by(username=username).first()
@@ -43,7 +53,19 @@ def is_users_spotify_linked(username):
         return spotify_linked
     else:
         return False
-    
+
+def db_write_spotify_token(token, user):
+    token = json.loads(token)
+    spotify_account_token = Spotify_Account_Token(access_token=token['access_token'],
+                                                  token_type=token['token_type'], 
+                                                  expires_in=token['expires_in'],
+                                                  scope=token['scope'],
+                                                  expires_at=token['expires_at'],
+                                                  refresh_token=token['refresh_token'],
+                                                  user_account=user)
+    db.session.add(spotify_account_token)
+    db.session.commit()
+
 # Not yet implemented
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)

@@ -6,7 +6,7 @@ from flask_jwt_extended import (
 )
 from backend import db, bcrypt
 from backend.models import Users, UsersSchema, Follow_Relationship
-from backend.auth.utils import session_cache_path, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit, get_user_info_from_token
+from backend.auth.utils import session_cache_path, db_write_spotify_token, is_users_spotify_linked, send_reset_email, validate_register, validate_login, validate_profile_edit, get_user_info_from_token
 from backend.errors.handlers import InvalidAPIUsage
 from flask_restful import Resource, Api, reqparse
 import os
@@ -257,12 +257,16 @@ def link_spotify_callback():
     
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     sp_user = spotify.current_user()
+
     from_file = open(session_cache_path(cache_file), 'r')
-    to_file = open(session_cache_path(str(sp_user['id'])), 'w')
-    to_file.write(from_file.read())
-    to_file.close()
+    token_data = from_file.read()
     from_file.close()
     os.remove(session_cache_path(cache_file))
 
+    to_file = open(session_cache_path(str(sp_user['id'])), 'w')
+    to_file.write(token_data)
+    to_file.close()
+
+    db_write_spotify_token(token_data, str(sp_user['id']))
     user = Users.query.filter_by(spotify_account=sp_user['id']).first()
     return redirect(current_app.config['FRONTEND_URL'] + 'findyourtune/#/u/' + user.username)
