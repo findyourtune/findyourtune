@@ -183,3 +183,31 @@ class FollowRelationshipSchema(ma.SQLAlchemySchema):
     follower_id = ma.auto_field
     followed_id = ma.auto_field
     timestamp = ma.auto_field
+
+
+class Spotify_Account_Token(db.Model):
+    __tablename__ = 'spotifytokens'
+    token_id = db.Column(db.Integer, primary_key=True)
+    user_account = db.Column(db.String(120), nullable=False)
+    access_token = db.Column(db.String(240), nullable=False)
+    token_type = db.Column(db.String(240), nullable=False)
+    expires_in = db.Column(db.String(60), nullable=False)
+    scope = db.Column(db.String(240), nullable=False)
+    expires_at = db.Column(db.String(60), nullable=False)
+    refresh_token = db.Column(db.String(240), nullable=False)
+
+    def __repr__(self):
+        return f"Token(token_id: '{self.token_id}', user_account: '{self.user_account}'"
+
+class SpotifyAccountTokenSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Spotify_Account_Token
+
+    token_id = ma.auto_field
+    user_account = ma.auto_field
+    access_token = ma.auto_field
+    token_type = ma.auto_field
+    expires_in = ma.auto_field
+    scope = ma.auto_field
+    expires_at = ma.auto_field
+    refresh_token = ma.auto_field
